@@ -7,268 +7,453 @@
 <title>The Mouse Click List | MCL</title>
 
 <style>
-* {
-  box-sizing: border-box;
+* { box-sizing: border-box; }
+
+:root {
+  --blue: #214a9a;
+  --blue-light: #3268d6;
+  --bg: #19191e;
+  --panel: #202026;
+  --line: #373740;
+  --text: #f6f6fb;
+  --muted: #b8b8ca;
 }
 
 body {
   margin: 0;
-  background: #111;
-  color: #eee;
+  background: var(--bg);
+  color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
 }
 
 header {
-  background: #191919;
-  border-bottom: 1px solid #383838;
-  padding: 24px 12px 20px;
-  text-align: center;
+  min-height: 86px;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 4%;
+  border-bottom: 4px solid #172e60;
 }
 
-h1 {
-  font-size: 26px;
-  letter-spacing: 1px;
-  margin: 0 0 8px;
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  white-space: nowrap;
 }
 
-header p {
-  color: #aaa;
-  font-size: 13px;
+.brand h1 {
   margin: 0;
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: -1px;
 }
+
+.version { font-size: 14px; font-weight: bold; }
 
 .site-nav {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .site-nav a {
-  padding: 8px 16px;
-  background: #242424;
-  border: 1px solid #444;
-  border-radius: 3px;
-  color: #eee;
-  font-size: 13px;
+  color: white;
   text-decoration: none;
+  font-weight: bold;
+  padding: 14px 13px;
+  border-bottom: 3px solid transparent;
 }
 
-.site-nav a:hover {
-  background: #333;
+.site-nav a:hover,
+.site-nav a.active {
+  border-bottom-color: white;
+  background: rgba(255,255,255,.08);
+}
+
+.submit-button {
+  display: inline-block;
+  background: white;
+  color: var(--blue) !important;
+  padding: 15px 20px !important;
+  border-radius: 12px;
+  border: 0 !important;
+  white-space: nowrap;
 }
 
 main {
-  width: 100%;
-  max-width: 1000px;
-  margin: 24px auto;
-  padding: 0 14px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 26px 24px;
 }
 
 .page-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 210px;
-  gap: 18px;
+  grid-template-columns: 275px minmax(300px, 1fr) 290px;
+  gap: 30px;
   align-items: start;
 }
 
-.list-title {
-  font-size: 19px;
-  font-weight: bold;
-  margin-bottom: 14px;
+.level-list {
+  border-right: 1px solid var(--line);
+  padding-right: 20px;
+}
+
+.level-list h2 {
+  font-size: 18px;
+  margin: 8px 0 16px;
 }
 
 #search {
-  display: block;
   width: 100%;
-  padding: 11px 12px;
-  margin-bottom: 16px;
-  background: #191919;
-  border: 1px solid #414141;
-  border-radius: 3px;
-  color: #fff;
+  padding: 12px;
+  margin-bottom: 14px;
+  color: white;
+  background: #25252d;
+  border: 1px solid #41414c;
+  border-radius: 8px;
   font-size: 14px;
 }
 
-#search:focus {
-  outline: 1px solid #888;
-}
-
-#search::placeholder {
-  color: #888;
-}
-
-.table-wrap {
+.level-button {
+  display: flex;
   width: 100%;
-  overflow-x: auto;
-  border: 1px solid #353535;
-  border-radius: 3px;
-}
-
-.leaderboard {
-  width: 100%;
-  border-collapse: collapse;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 12px;
+  margin-bottom: 5px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text);
   text-align: left;
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.leaderboard th {
-  background: #242424;
-  color: #bbb;
-  padding: 11px 8px;
-  border-bottom: 1px solid #444;
-  font-weight: normal;
-  white-space: nowrap;
+.level-button:hover { background: #292b35; }
+
+.level-button.selected {
+  background: var(--blue);
 }
 
-.leaderboard td {
-  padding: 12px 8px;
-  border-bottom: 1px solid #303030;
-  background: #191919;
+.level-rank {
+  min-width: 35px;
+  color: #c6d3f2;
 }
 
-.leaderboard tbody tr:last-child td {
-  border-bottom: none;
+.center-panel {
+  min-width: 0;
+  padding: 0 0 20px;
 }
 
-.leaderboard tbody tr:hover td {
-  background: #252525;
+#level-name {
+  margin: 0 0 18px;
+  font-size: clamp(32px, 4vw, 58px);
+  overflow-wrap: anywhere;
 }
 
-.rank-cell {
-  width: 52px;
-  color: #aaa;
+.details {
+  display: grid;
+  grid-template-columns: 115px 1fr;
+  gap: 12px 15px;
+  margin-bottom: 28px;
+  font-size: 17px;
+}
+
+.details strong {
+  color: #bdc9f0;
+}
+
+.game-preview {
+  position: relative;
+  min-height: 260px;
+  aspect-ratio: 16 / 9;
+  border: 1px solid #3457a0;
+  border-radius: 10px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 70% 40%, #1555a9 0, transparent 25%),
+    linear-gradient(135deg, #050912, #102b66 48%, #080b17);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.game-preview::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .65;
+  background:
+    repeating-linear-gradient(45deg, transparent 0 35px,
+      rgba(0,190,255,.25) 36px 39px, transparent 40px 70px);
+  pointer-events: none;
+}
+
+.preview-title, .play-link {
+  position: relative;
+  z-index: 1;
+}
+
+.preview-title {
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 0 2px 6px black;
+}
+
+.play-link {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 82px;
+  height: 58px;
+  background: #f5223d;
+  color: white;
+  text-decoration: none;
+  border-radius: 15px;
+  font-size: 28px;
+}
+
+.preview-note {
+  position: relative;
+  z-index: 1;
+  color: #d5dffb;
+  font-size: 12px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 22px 0 28px;
   text-align: center;
 }
 
-.level-link {
-  color: #eee;
+.stat {
+  padding: 12px 8px;
+  border-right: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+
+.stat:last-child { border-right: 0; }
+
+.stat-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #bdc9f0;
+  font-size: 13px;
   font-weight: bold;
-  text-decoration: none;
+  text-transform: uppercase;
 }
 
-.level-link:hover {
-  text-decoration: underline;
+.stat-value {
+  font-size: 23px;
+  font-weight: bold;
 }
 
-.id-cell {
-  color: #999;
-  font-size: 12px;
-  white-space: nowrap;
+.records-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 27px;
+  margin: 25px 0 12px;
 }
 
-.difficulty-cell {
-  color: #ccc;
-  white-space: nowrap;
+.records-title::after {
+  content: "";
+  height: 3px;
+  background: var(--blue-light);
+  flex: 1;
 }
 
-.empty-message {
+.records-box {
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
   padding: 15px;
-  color: #aaa;
-}
-
-.sidebar {
-  background: #1b1b1b;
-  border: 1px solid #353535;
-  border-radius: 3px;
-  padding: 13px;
-}
-
-.sidebar h2 {
-  font-size: 15px;
-  margin: 0 0 10px;
-  padding-bottom: 9px;
-  border-bottom: 1px solid #383838;
-}
-
-.sidebar p {
-  margin: 0 0 10px;
-  color: #bbb;
-  font-size: 12px;
   line-height: 1.6;
 }
 
+.right-sidebar {
+  border-left: 1px solid var(--line);
+  padding-left: 24px;
+}
+
+.made-by {
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 6px 0 28px;
+}
+
+.side-section { margin-bottom: 32px; }
+
+.side-section h2 {
+  font-size: 25px;
+  margin: 0 0 18px;
+}
+
+.side-section p,
+.side-section li {
+  color: #dedee8;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.side-section ul {
+  padding-left: 20px;
+}
+
+.side-section a {
+  color: #a9c5ff;
+}
+
+.editor {
+  margin: 13px 0;
+  font-size: 16px;
+}
+
 footer {
-  border-top: 1px solid #333;
-  margin-top: 32px;
-  padding: 20px 12px;
-  color: #888;
-  font-size: 12px;
+  border-top: 1px solid var(--line);
+  padding: 22px;
+  color: #9999a8;
   text-align: center;
+  font-size: 12px;
+}
+
+@media (max-width: 1050px) {
+  header { flex-wrap: wrap; justify-content: center; }
+  .page-layout {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+  .right-sidebar {
+    grid-column: 1 / -1;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding: 22px 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
 }
 
 @media (max-width: 650px) {
-  h1 {
-    font-size: 23px;
+  header { padding: 16px 12px; gap: 12px; }
+  .brand h1 { font-size: 29px; }
+  .site-nav { gap: 2px; }
+  .site-nav a { padding: 10px 8px; font-size: 13px; }
+  main { padding: 18px 12px; }
+  .page-layout { grid-template-columns: 1fr; gap: 24px; }
+  .level-list {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 18px;
   }
-
-  main {
-    padding: 0 10px;
-  }
-
-  .page-layout {
+  .level-button { padding: 10px 12px; }
+  .right-sidebar {
+    grid-column: auto;
     grid-template-columns: 1fr;
   }
-
-  .leaderboard {
-    font-size: 12px;
-  }
-
-  .leaderboard th,
-  .leaderboard td {
-    padding: 10px 6px;
-  }
-
-  .rank-cell {
-    width: 38px;
-  }
-
-  .sidebar {
-    margin-top: 2px;
-  }
+  .game-preview { min-height: 200px; }
+  .details { grid-template-columns: 100px 1fr; font-size: 15px; }
 }
 </style>
 </head>
 
 <body>
 <header>
-  <h1>THE MOUSE CLICK LIST</h1>
-  <p>An independent Geometry Dash demon ranking</p>
+  <div class="brand">
+    <h1>MCL.</h1>
+    <span class="version">v1.0.0</span>
+  </div>
 
   <nav class="site-nav">
-    <a href="./">Main List</a>
-    <a
-      href="https://forms.google.com/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >Submissions</a>
+    <a class="active" href="./">List</a>
+    <a href="players.html">Player Leaderboard</a>
+    <a href="https://gdbrowser.com/">Roulette</a>
+    <a class="submit-button" href="https://forms.google.com/"
+       target="_blank" rel="noopener noreferrer">Submit Record</a>
   </nav>
 </header>
 
 <main>
   <div class="page-layout">
-
-    <section>
-      <div class="list-title">Demon Rankings</div>
-
-      <input
-        id="search"
-        type="search"
-        placeholder="Search demons or level IDs..."
-        aria-label="Search demons">
-
-      <div id="rankings"></div>
-    </section>
-
-    <aside class="sidebar">
-      <h2>Information</h2>
-      <p>Welcome to The Mouse Click List!</p>
-      <p>Updates, announcements, and list rules will appear here.</p>
-      <p>This is an independent community project.</p>
+    <aside class="level-list">
+      <h2>Demon List</h2>
+      <input id="search" type="search"
+        placeholder="Search levels or IDs..." aria-label="Search levels">
+      <div id="level-buttons"></div>
     </aside>
 
+    <section class="center-panel">
+      <h2 id="level-name">Loading...</h2>
+
+      <div class="details">
+        <strong>CREATORS</strong><span id="creator">Community</span>
+        <strong>VERIFIER</strong><span id="verifier">TBD</span>
+        <strong>PUBLISHER</strong><span>MCL</span>
+      </div>
+
+      <div class="game-preview">
+        <div class="preview-title" id="preview-title">MCL Demon List</div>
+        <a id="gameplay-link" class="play-link" href="https://www.youtube.com/"
+           target="_blank" rel="noopener noreferrer" aria-label="Find gameplay">▶</a>
+        <div class="preview-note">Gameplay preview • Open the video link to watch</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-label">Points when completed</span>
+          <span class="stat-value" id="points">500</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Level ID</span>
+          <span class="stat-value" id="level-id">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Password</span>
+          <span class="stat-value" id="password">Unknown</span>
+        </div>
+      </div>
+
+      <h2 class="records-title">Records</h2>
+      <div class="records-box" id="records">
+        Approved player completions will be listed here.
+      </div>
+    </section>
+
+    <aside class="right-sidebar">
+      <section class="side-section">
+        <div class="made-by">Website layout made for The Mouse Click List.</div>
+        <h2>List Editors</h2>
+        <div class="editor">👑 MCL Owner</div>
+        <div class="editor">♟ List Helper</div>
+        <div class="editor">⌘ List Coder</div>
+      </section>
+
+      <section class="side-section">
+        <h2>Submission Requirements</h2>
+        <ul>
+          <li>Provide proof of completion.</li>
+          <li>No hacks or modified gameplay.</li>
+          <li>Wait for manual verification.</li>
+          <li>Only approved records earn points.</li>
+        </ul>
+      </section>
+
+      <section class="side-section">
+        <h2>About MCL</h2>
+        <p>The Mouse Click List is a fan-made Geometry Dash ranking project.</p>
+        <p>Level points are set individually by the MCL list owner.</p>
+      </section>
+    </aside>
   </div>
 </main>
 
@@ -277,93 +462,130 @@ footer {
 </footer>
 
 <script>
+/*
+  EDIT THIS LIST TO CHANGE LEVELS AND POINT VALUES.
+  Points are examples. Set each level's value individually.
+  Lower list number = higher ranking.
+*/
 const demons = [
   {
     name: "Tidal 67",
     difficulty: "Extreme Demon",
-    id: "88488708"
+    id: "88488708",
+    points: 500,
+    creator: "Community",
+    verifier: "TBD",
+    password: "Unknown"
   },
   {
     name: "Acheron",
     difficulty: "Extreme Demon",
-    id: "82040280"
+    id: "82040280",
+    points: 450,
+    creator: "Community",
+    verifier: "TBD",
+    password: "Unknown"
   },
   {
     name: "Slaughterhouse",
     difficulty: "Extreme Demon",
-    id: "77436731"
+    id: "77436731",
+    points: 400,
+    creator: "Community",
+    verifier: "TBD",
+    password: "Unknown"
   },
   {
     name: "Bloodbath",
     difficulty: "Extreme Demon",
-    id: "10565740"
+    id: "10565740",
+    points: 300,
+    creator: "Community",
+    verifier: "TBD",
+    password: "Unknown"
   },
   {
     name: "Cataclysm",
     difficulty: "Extreme Demon",
-    id: "3979725"
+    id: "3979725",
+    points: 200,
+    creator: "Community",
+    verifier: "TBD",
+    password: "Unknown"
   }
 ];
 
-function renderList(query = "") {
-  const searchTerm = query.trim().toLowerCase();
+let selectedLevel = 0;
 
-  const results = demons.filter(demon =>
-    demon.name.toLowerCase().includes(searchTerm) ||
-    demon.id.includes(searchTerm) ||
-    demon.difficulty.toLowerCase().includes(searchTerm)
-  );
+function renderButtons(query = "") {
+  const term = query.trim().toLowerCase();
+  const container = document.getElementById("level-buttons");
 
-  const rankings = document.getElementById("rankings");
+  const matches = demons
+    .map((demon, index) => ({ demon, index }))
+    .filter(item =>
+      item.demon.name.toLowerCase().includes(term) ||
+      item.demon.id.includes(term) ||
+      item.demon.difficulty.toLowerCase().includes(term)
+    );
 
-  if (results.length === 0) {
-    rankings.innerHTML =
-      '<div class="empty-message">No demons found. Try another search!</div>';
+  if (!matches.length) {
+    container.textContent = "No levels found.";
     return;
   }
 
-  rankings.innerHTML = `
-    <div class="table-wrap">
-      <table class="leaderboard">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Level</th>
-            <th>Difficulty</th>
-            <th>ID</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${results.map(demon => {
-            const rank = demons.indexOf(demon) + 1;
+  container.replaceChildren();
 
-            return `
-              <tr>
-                <td class="rank-cell">#${rank}</td>
-                <td>
-                  <a
-                    class="level-link"
-                    href="https://gdbrowser.com/${encodeURIComponent(demon.id)}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >${demon.name}</a>
-                </td>
-                <td class="difficulty-cell">${demon.difficulty}</td>
-                <td class="id-cell">${demon.id}</td>
-              </tr>
-            `;
-          }).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
+  matches.forEach(({ demon, index }) => {
+    const button = document.createElement("button");
+    button.className = "level-button" +
+      (index === selectedLevel ? " selected" : "");
+    button.type = "button";
+
+    const rank = document.createElement("span");
+    rank.className = "level-rank";
+    rank.textContent = "#" + (index + 1);
+
+    const name = document.createElement("span");
+    name.textContent = demon.name;
+
+    button.append(rank, name);
+    button.addEventListener("click", () => {
+      selectedLevel = index;
+      renderButtons(document.getElementById("search").value);
+      renderDetails();
+    });
+
+    container.appendChild(button);
+  });
+}
+
+function renderDetails() {
+  const demon = demons[selectedLevel];
+  document.getElementById("level-name").textContent = demon.name;
+  document.getElementById("preview-title").textContent = demon.name;
+  document.getElementById("creator").textContent = demon.creator;
+  document.getElementById("verifier").textContent = demon.verifier;
+  document.getElementById("points").textContent = demon.points;
+  document.getElementById("level-id").textContent = demon.id;
+  document.getElementById("password").textContent = demon.password;
+
+  document.getElementById("gameplay-link").href =
+    "https://www.youtube.com/results?search_query=" +
+    encodeURIComponent("Geometry Dash " + demon.name + " completion");
+
+  document.getElementById("records").textContent =
+    "Approved player completions for " + demon.name +
+    " will be listed here after records are reviewed.";
 }
 
 document.getElementById("search").addEventListener("input", event => {
-  renderList(event.target.value);
+  renderButtons(event.target.value);
 });
 
-renderList();
+renderButtons();
+renderDetails();
 </script>
 </body>
 </html>
+
