@@ -3,12 +3,50 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Mouse Click List | MCL</title>
 
+<style>
+* {
+  box-sizing: border-box;
+}
 
-/* Main rankings + right information sidebar */
+body {
+  margin: 0;
+  background: #111111;
+  color: #eeeeee;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+header {
+  background: #191919;
+  border-bottom: 1px solid #383838;
+  padding: 24px 12px 20px;
+  text-align: center;
+}
+
+h1 {
+  color: #eeeeee;
+  font-size: 27px;
+  margin: 0 0 8px;
+  letter-spacing: 1px;
+}
+
+header p {
+  color: #aaaaaa;
+  font-size: 13px;
+  margin: 0;
+}
+
+main {
+  width: 100%;
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 14px;
+}
+
+/* Rankings and right sidebar */
 .page-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 210px;
@@ -16,6 +54,78 @@ content="width=device-width, initial-scale=1.0">
   align-items: start;
 }
 
+.list-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 14px;
+}
+
+input {
+  display: block;
+  width: 100%;
+  padding: 11px 12px;
+  margin-bottom: 16px;
+  background: #191919;
+  border: 1px solid #414141;
+  border-radius: 3px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: 1px solid #888888;
+}
+
+input::placeholder {
+  color: #888888;
+}
+
+.demon {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  background: #1b1b1b;
+  border: 1px solid #353535;
+  border-radius: 3px;
+  padding: 13px 10px;
+  margin-bottom: 5px;
+}
+
+.rank {
+  color: #bbbbbb;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.name {
+  color: #eeeeee;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.name:hover {
+  text-decoration: underline;
+}
+
+.difficulty {
+  color: #aaaaaa;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.tag {
+  color: #cccccc;
+  background: #292929;
+  border: 1px solid #444444;
+  border-radius: 3px;
+  padding: 5px 7px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+/* Information sidebar */
 .sidebar {
   background: #1b1b1b;
   border: 1px solid #353535;
@@ -24,10 +134,10 @@ content="width=device-width, initial-scale=1.0">
 }
 
 .sidebar h2 {
+  font-size: 15px;
   margin: 0 0 10px;
   padding-bottom: 9px;
   border-bottom: 1px solid #383838;
-  font-size: 15px;
 }
 
 .sidebar p {
@@ -37,41 +147,71 @@ content="width=device-width, initial-scale=1.0">
   line-height: 1.6;
 }
 
+footer {
+  border-top: 1px solid #333333;
+  margin-top: 32px;
+  padding: 20px 12px;
+  color: #888888;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Mobile layout */
 @media (max-width: 600px) {
+  h1 {
+    font-size: 23px;
+  }
+
+  main {
+    padding: 0 10px;
+  }
+
   .page-layout {
     grid-template-columns: 1fr;
   }
+
+  .demon {
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    gap: 7px;
+    padding: 12px 8px;
+  }
+
+  .tag {
+    font-size: 9px;
+    padding: 4px;
+  }
 }
-
-
+</style>
 </head>
 
 <body>
 <header>
-<h1>THE MOUSE CLICK LIST</h1>
+  <h1>THE MOUSE CLICK LIST</h1>
   <p>An independent Geometry Dash demon ranking</p>
 </header>
 
 <main>
+  <div class="page-layout">
 
-<div class="page-layout">
-  <section>
-    <div class="list-title">Demon Rankings</div>
+    <section>
+      <div class="list-title">Demon Rankings</div>
 
-    <input id="search"
-      placeholder="Search for a demon..."
-      aria-label="Search demons">
+      <input
+        id="search"
+        type="search"
+        placeholder="Search for a demon..."
+        aria-label="Search demons">
 
-    <div id="rankings"></div>
-  </section>
+      <div id="rankings"></div>
+    </section>
 
-  <aside class="sidebar">
-    <h2>Information</h2>
-    <p>Welcome to The Mouse Click List!</p>
-    <p>Updates, announcements, rules, and other information will go here.</p>
-  </aside>
-</div>
+    <aside class="sidebar">
+      <h2>Information</h2>
+      <p>Welcome to The Mouse Click List!</p>
+      <p>Updates, announcements, rules, and other information will go here.</p>
+    </aside>
 
+  </div>
 </main>
 
 <footer>
@@ -80,7 +220,6 @@ content="width=device-width, initial-scale=1.0">
 </footer>
 
 <script>
-
 const demons = [
   {
     name: "Tidal 67",
@@ -117,6 +256,7 @@ function renderList(query = "") {
   document.getElementById("rankings").innerHTML =
     results.map(d => {
       const rank = demons.indexOf(d) + 1;
+
       return `
         <div class="demon">
           <div class="rank">#${rank}</div>
@@ -137,9 +277,9 @@ function renderList(query = "") {
 }
 
 document.getElementById("search")
-  .addEventListener("input", event =>
-    renderList(event.target.value)
-  );
+  .addEventListener("input", event => {
+    renderList(event.target.value);
+  });
 
 renderList();
 </script>
