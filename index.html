@@ -39,6 +39,29 @@ header p {
   margin: 0;
 }
 
+.site-nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #242424;
+  border: 1px solid #444444;
+  border-radius: 3px;
+  color: #eeeeee;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  background: #333333;
+}
+
 main {
   width: 100%;
   max-width: 900px;
@@ -46,7 +69,6 @@ main {
   padding: 0 14px;
 }
 
-/* Rankings and right sidebar */
 .page-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 210px;
@@ -125,7 +147,6 @@ input::placeholder {
   white-space: nowrap;
 }
 
-/* Information sidebar */
 .sidebar {
   background: #1b1b1b;
   border: 1px solid #353535;
@@ -156,7 +177,6 @@ footer {
   text-align: center;
 }
 
-/* Mobile layout */
 @media (max-width: 600px) {
   h1 {
     font-size: 23px;
@@ -176,32 +196,13 @@ footer {
     padding: 12px 8px;
   }
 
-
-.site-nav {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 18px;
-  flex-wrap: wrap;
+  .tag {
+    font-size: 9px;
+    padding: 4px;
+  }
 }
-
-.site-nav a {
-  display: inline-block;
-  padding: 8px 16px;
-  background: #242424;
-  border: 1px solid #444444;
-  border-radius: 3px;
-  color: #eeeeee;
-  font-size: 13px;
-  text-decoration: none;
-}
-
-.site-nav a:hover {
-  background: #333333;
-}
-
+</style>
 </head>
-
 
 <body>
 <header>
@@ -218,7 +219,6 @@ footer {
 
 <main>
   <div class="page-layout">
-
     <section>
       <div class="list-title">Demon Rankings</div>
 
@@ -236,7 +236,6 @@ footer {
       <p>Welcome to The Mouse Click List!</p>
       <p>Updates, announcements, rules, and other information will go here.</p>
     </aside>
-
   </div>
 </main>
 
