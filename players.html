@@ -175,9 +175,19 @@ nav a.submit {
 </main>
 
 <script>
-// EXAMPLE DATA: replace these players and records with your real MCL data.
 
-const players = [];
+const players = [
+  {
+    name: "Elyxyt",
+    points: 50,
+    verified: [
+      { rank: 1, name: "Retray", points: 50 }
+    ],
+    completed: [
+      { rank: 1, name: "Retray", points: 50 }
+    ]
+  }
+];
 
 players.sort((a, b) => b.points - a.points);
 let selected = 0;
