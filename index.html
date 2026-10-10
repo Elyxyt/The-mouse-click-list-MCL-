@@ -6,100 +6,153 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 <title>The Mouse Click List | MCL</title>
+
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
-  background: #101116;
-  color: #f4f4f7;
-  font-family: Arial, sans-serif;
+  background: #111111;
+  color: #eeeeee;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
 }
 
 header {
-  background: #191a23;
-  padding: 26px 16px;
+  background: #191919;
+  border-bottom: 1px solid #383838;
+  padding: 24px 12px 20px;
   text-align: center;
-  border-bottom: 2px solid #ff4057;
 }
 
 h1 {
-  color: #ff4057;
+  color: #f0f0f0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 1px;
   margin: 0 0 8px;
-  font-size: 30px;
 }
 
-header p { color: #b7b8c7; }
+header p {
+  color: #aaaaaa;
+  font-size: 13px;
+  margin: 0;
+}
 
 main {
-  max-width: 850px;
-  margin: auto;
-  padding: 20px 12px;
-}
-
-input {
   width: 100%;
-  padding: 13px;
-  border-radius: 8px;
-  border: 1px solid #414251;
-  background: #20212b;
-  color: white;
-  font-size: 16px;
-  margin-bottom: 16px;
+  max-width: 760px;
+  margin: 24px auto;
+  padding: 0 14px;
 }
 
 .list-title {
-  font-size: 20px;
-  margin-bottom: 12px;
+  color: #eeeeee;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 14px;
+}
+
+input {
+  display: block;
+  width: 100%;
+  padding: 11px 12px;
+  margin-bottom: 18px;
+  background: #191919;
+  border: 1px solid #414141;
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #999999;
+}
+
+input::placeholder {
+  color: #888888;
 }
 
 .demon {
   display: grid;
-  grid-template-columns: 48px 1fr auto;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px;
-  background: #1c1d27;
-  border: 1px solid #30313e;
-  border-radius: 9px;
-  padding: 14px 12px;
-  margin-bottom: 9px;
+  gap: 10px;
+  background: #1b1b1b;
+  border: 1px solid #353535;
+  border-radius: 3px;
+  padding: 13px 12px;
+  margin-bottom: 5px;
 }
 
 .rank {
-  color: #ff5368;
-  font-size: 20px;
+  color: #bbbbbb;
+  font-size: 15px;
   font-weight: bold;
+  text-align: center;
 }
 
 .name {
-  color: white;
+  color: #eeeeee;
   font-weight: bold;
   text-decoration: none;
 }
 
-.name:hover { color: #ff7182; }
+.name:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
 
 .difficulty {
-  color: #ff7182;
+  color: #aaaaaa;
   font-size: 12px;
   margin-top: 5px;
 }
 
 .tag {
-  background: #34202a;
-  color: #ff8190;
-  border-radius: 5px;
-  padding: 6px;
-  font-size: 11px;
+  color: #cccccc;
+  background: #292929;
+  border: 1px solid #444444;
+  border-radius: 3px;
+  padding: 5px 7px;
+  font-size: 10px;
+  white-space: nowrap;
 }
 
 footer {
-  text-align: center;
-  padding: 24px;
-  color: #858697;
+  border-top: 1px solid #333333;
+  margin-top: 32px;
+  padding: 20px 12px;
+  color: #888888;
   font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 420px) {
+  h1 {
+    font-size: 23px;
+  }
+
+  main {
+    padding: 0 10px;
+  }
+
+  .demon {
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    gap: 7px;
+    padding: 12px 8px;
+  }
+
+  .tag {
+    font-size: 9px;
+    padding: 4px;
+  }
 }
 </style>
+
 </head>
 
 <body>
