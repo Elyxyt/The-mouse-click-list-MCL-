@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+<title>My Demon List</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #101116;
+  color: #f4f4f7;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background: #191a23;
+  padding: 26px 16px;
+  text-align: center;
+  border-bottom: 2px solid #ff4057;
+}
+
+h1 {
+  color: #ff4057;
+  margin: 0 0 8px;
+  font-size: 30px;
+}
+
+header p { color: #b7b8c7; }
+
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 20px 12px;
+}
+
+input {
+  width: 100%;
+  padding: 13px;
+  border-radius: 8px;
+  border: 1px solid #414251;
+  background: #20212b;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.list-title {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.demon {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  background: #1c1d27;
+  border: 1px solid #30313e;
+  border-radius: 9px;
+  padding: 14px 12px;
+  margin-bottom: 9px;
+}
+
+.rank {
+  color: #ff5368;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.name {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.name:hover { color: #ff7182; }
+
+.difficulty {
+  color: #ff7182;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.tag {
+  background: #34202a;
+  color: #ff8190;
+  border-radius: 5px;
+  padding: 6px;
+  font-size: 11px;
+}
+
+footer {
+  text-align: center;
+  padding: 24px;
+  color: #858697;
+  font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>MY DEMON LIST</h1>
+  <p>An independent Geometry Dash demon ranking</p>
+</header>
+
+<main>
+  <div class="list-title">🏆 Demon Rankings</div>
+
+  <input id="search"
+    placeholder="Search for a demon..."
+    aria-label="Search demons">
+
+  <div id="rankings"></div>
+</main>
+
+<footer>
+  Fan-made community project. Not affiliated
+  with RobTop or Pointercrate.
+</footer>
+
+<script>
+const demons = [
+  { name: "Tidal Wave", difficulty: "Extreme Demon",
+    id: "88488708" },
+  { name: "Acheron", difficulty: "Extreme Demon",
+    id: "82040280" },
+  { name: "Slaughterhouse", difficulty: "Extreme Demon",
+    id: "77436731" },
+  { name: "Bloodbath", difficulty: "Extreme Demon",
+    id: "10565740" },
+  { name: "Cataclysm", difficulty: "Extreme Demon",
+    id: "3979725" }
+];
+
+function renderList(query = "") {
+  const results = demons.filter(d =>
+    d.name.toLowerCase().includes(query.toLowerCase())
+  );
+
+  document.getElementById("rankings").innerHTML =
+    results.map(d => {
+      const rank = demons.indexOf(d) + 1;
+      return `
+        <div class="demon">
+          <div class="rank">#${rank}</div>
+          <div>
+            <a class="name"
+              href="https://gdbrowser.com/${d.id}"
+              target="_blank"
+              rel="noopener noreferrer">
+              ${d.name}
+            </a>
+            <div class="difficulty">${d.difficulty}</div>
+          </div>
+          <span class="tag">DEMON</span>
+        </div>
+      `;
+    }).join("") ||
+    "<p>No demons found. Try another name!</p>";
+}
+
+document.getElementById("search")
+  .addEventListener("input", event =>
+    renderList(event.target.value)
+  );
+
+renderList();
+</script>
+</body>
+</html>
