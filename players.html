@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCL Player Leaderboard</title>
+<style>
+:root {
+  --blue: #244991;
+  --bg: #1c1b20;
+  --text: #f8f8fb;
+  --muted: #aaa9b3;
+  --panel: #24232a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Arial, sans-serif;
+  font-weight: 600;
+}
+nav {
+  min-height: 94px;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 35px;
+  padding: 14px 4%;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #ffffff20;
+}
+.logo { font-size: 34px; font-weight: 900; white-space: nowrap; }
+.version { font-size: 15px; opacity: .85; }
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 18px 15px;
+  font-size: 17px;
+}
+nav a.active { border-bottom: 4px solid white; }
+nav a.submit {
+  background: white;
+  color: var(--blue);
+  border-radius: 12px;
+  padding: 15px 22px;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 34%) minmax(0, 1fr);
+  max-width: 1500px;
+  margin: 0 auto;
+  gap: 35px;
+  padding: 30px;
+}
+.left { min-width: 0; }
+.page-title {
+  margin: 0 0 18px;
+  font-size: 27px;
+}
+.search {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid #3a3942;
+  border-radius: 10px;
+  padding: 14px;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 18px;
+  outline: none;
+}
+.search:focus { border-color: #638fe8; }
+.player {
+  display: grid;
+  grid-template-columns: 48px 100px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: white;
+  padding: 15px 10px;
+  margin-bottom: 3px;
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+}
+.player:hover { background: #ffffff0b; }
+.player.selected { background: var(--blue); }
+.rank, .points { font-variant-numeric: tabular-nums; }
+.points { color: #e0dfeb; }
+.player-name {
+  overflow-wrap: anywhere;
+}
+.right { min-width: 0; padding: 2px 0 30px; }
+.player-heading {
+  font-size: clamp(32px, 5vw, 62px);
+  line-height: 1.12;
+  font-weight: 900;
+  margin: 4px 0 14px;
+  overflow-wrap: anywhere;
+}
+.total {
+  font-size: clamp(23px, 3vw, 34px);
+  margin-bottom: 22px;
+  font-variant-numeric: tabular-nums;
+}
+.section-title {
+  font-size: clamp(27px, 3.3vw, 40px);
+  margin: 25px 0 18px;
+  font-weight: 900;
+}
+.record {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 17px 0;
+  font-size: 17px;
+  border-bottom: 1px solid #ffffff0b;
+}
+.record-rank { color: #d0cfda; }
+.record-name { overflow-wrap: anywhere; }
+.record-points {
+  text-align: right;
+  white-space: nowrap;
+}
+.empty { color: var(--muted); padding: 18px 0; }
+.note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 400;
+  margin-top: 28px;
+}
+@media (min-width: 1500px) {
+  .layout { grid-template-columns: 480px minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  nav { gap: 8px; min-height: auto; padding: 12px; }
+  .logo { font-size: 27px; }
+  nav a { padding: 10px; font-size: 14px; }
+  nav a.submit { padding: 11px 13px; }
+  .layout { grid-template-columns: 1fr; padding: 18px; gap: 30px; }
+  .left { border-bottom: 1px solid #ffffff20; padding-bottom: 20px; }
+  .player { grid-template-columns: 42px 88px minmax(0, 1fr); }
+  .right { padding-top: 0; }
+  .record { grid-template-columns: 52px minmax(0, 1fr) auto; gap: 8px; font-size: 14px; }
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">MCL<span class="version"> v1.0.0</span></div>
+  <a href="./">List</a>
+  <a class="active" href="players.html">Leaderboard</a>
+  <a href="https://gdbrowser.com/">Roulette</a>
+  <a class="submit" href="https://forms.google.com/">Submit Record</a>
+</nav>
+
+<main class="layout">
+  <section class="left">
+    <h2 class="page-title">Player Leaderboard</h2>
+    <input id="search" class="search" type="search"
+      placeholder="Search players..." aria-label="Search players">
+    <div id="players"></div>
+  </section>
+
+  <section class="right" id="details" aria-live="polite"></section>
+</main>
+
+<script>
+// EXAMPLE DATA: replace these players and records with your real MCL data.
+const players = [
+  {
+    name: "Elyxyt",
+    points: 463.075,
+    verified: [
+      { rank: 1, name: "Tidal", points: 67.500 },
+      { rank: 2, name: "Acheron", points: 45.000 },
+      { rank: 5, name: "Bloodbath", points: 30.000 },
+      { rank: 8, name: "Cataclysm", points: 20.000 },
+      { rank: 12, name: "Nine Circles", points: 12.000 }
+    ],
+    completed: [
+      { rank: 9, name: "Jawbreaker", points: 14.257 },
+      { rank: 17, name: "Deadlocked", points: 12.422 },
+      { rank: 18, name: "Theory of Everything 2", points: 12.236 }
+    ]
+  },
+  {
+    name: "GriddyGMD",
+    points: 959.542,
+    verified: [
+      { rank: 1, name: "Tidal", points: 67.500 },
+      { rank: 2, name: "Acheron", points: 45.000 },
+      { rank: 3, name: "Slaughterhouse", points: 40.000 },
+      { rank: 4, name: "Bloodbath", points: 30.000 },
+      { rank: 5, name: "Cataclysm", points: 20.000 }
+    ],
+    completed: [
+      { rank: 9, name: "Jawbreaker", points: 14.257 },
+      { rank: 17, name: "Deadlocked", points: 12.422 },
+      { rank: 18, name: "Theory of Everything 2", points: 12.236 }
+    ]
+  },
+  {
+    name: "Operus",
+    points: 866.945,
+    verified: [
+      { rank: 2, name: "Acheron", points: 45.000 },
+      { rank: 4, name: "Bloodbath", points: 30.000 }
+    ],
+    completed: [
+      { rank: 9, name: "Jawbreaker", points: 14.257 }
+    ]
+  },
+  {
+    name: "Nautiquatic",
+    points: 626.373,
+    verified: [
+      { rank: 1, name: "Tidal", points: 67.500 },
+      { rank: 5, name: "Cataclysm", points: 20.000 }
+    ],
+    completed: [
+      { rank: 17, name: "Deadlocked", points: 12.422 }
+    ]
+  },
+  {
+    name: "Powstick",
+    points: 608.633,
+    verified: [
+      { rank: 2, name: "Acheron", points: 45.000 }
+    ],
+    completed: [
+      { rank: 18, name: "Theory of Everything 2", points: 12.236 }
+    ]
+  },
+  {
+    name: "Chillen",
+    points: 480.020,
+    verified: [
+      { rank: 3, name: "Slaughterhouse", points: 40.000 }
+    ],
+    completed: [
+      { rank: 9, name: "Jawbreaker", points: 14.257 }
+    ]
+  },
+  {
+    name: "MrPanzi",
+    points: 474.051,
+    verified: [
+      { rank: 4, name: "Bloodbath", points: 30.000 }
+    ],
+    completed: []
+  },
+  {
+    name: "Pololamd",
+    points: 455.579,
+    verified: [
+      { rank: 5, name: "Cataclysm", points: 20.000 }
+    ],
+    completed: []
+  },
+  {
+    name: "ziqqz",
+    points: 319.429,
+    verified: [],
+    completed: [
+      { rank: 17, name: "Deadlocked", points: 12.422 }
+    ]
+  }
+];
+
+players.sort((a, b) => b.points - a.points);
+let selected = 0;
+
+function formatPoints(n) {
+  return Number(n).toFixed(3);
+}
+
+function renderPlayers() {
+  const query = document.getElementById("search").value.toLowerCase();
+  const list = document.getElementById("players");
+  list.innerHTML = "";
+
+  players.forEach((p, i) => {
+    if (!p.name.toLowerCase().includes(query)) return;
+
+    const button = document.createElement("button");
+    button.className = "player" + (i === selected ? " selected" : "");
+    button.innerHTML =
+      '<span class="rank">#' + (i + 1) + '</span>' +
+      '<span class="points">' + formatPoints(p.points) + '</span>' +
+      '<span class="player-name"></span>';
+    button.querySelector(".player-name").textContent = p.name;
+    button.onclick = () => {
+      selected = i;
+      renderPlayers();
+      renderDetails();
+    };
+    list.appendChild(button);
+  });
+
+  if (!list.children.length) {
+    list.innerHTML = '<p class="empty">No players found.</p>';
+  }
+}
+
+function renderRecords(records) {
+  if (!records.length) {
+    return '<p class="empty">No records added yet.</p>';
+  }
+
+  return records.map(r =>
+    '<div class="record">' +
+      '<span class="record-rank">#' + r.rank + '</span>' +
+      '<span class="record-name"></span>' +
+      '<span class="record-points">+' + formatPoints(r.points) + '</span>' +
+    '</div>'
+  ).join("");
+}
+
+function renderDetails() {
+  const p = players[selected];
+  const details = document.getElementById("details");
+
+  details.innerHTML =
+    '<h1 class="player-heading">#' + (selected + 1) +
+    ' <span id="selectedName"></span></h1>' +
+    '<div class="total">' + formatPoints(p.points) + '</div>' +
+    '<h2 class="section-title">Verified (' + p.verified.length + ')</h2>' +
+    '<div id="verifiedRecords"></div>' +
+    '<h2 class="section-title">Completed (' + p.completed.length + ')</h2>' +
+    '<div id="completedRecords"></div>' +
+    '<p class="note">The Mouse Click List · Player points and records are example data. Replace them with verified MCL results.</p>';
+
+  document.getElementById("selectedName").textContent = p.name;
+
+  function fillRecords(id, records) {
+    const container = document.getElementById(id);
+    container.innerHTML = renderRecords(records);
+    const names = container.querySelectorAll(".record-name");
+    records.forEach((r, i) => {
+      names[i].textContent = r.name;
+    });
+  }
+
+  fillRecords("verifiedRecords", p.verified);
+  fillRecords("completedRecords", p.completed);
+}
+
+document.getElementById("search").addEventListener("input", renderPlayers);
+renderPlayers();
+renderDetails();
+</script>
+</body>
+</html>
