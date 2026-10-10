@@ -467,53 +467,7 @@ footer {
   Points are examples. Set each level's value individually.
   Lower list number = higher ranking.
 */
-const demons = [
-  {
-    name: "Tidal 67",
-    difficulty: "Extreme Demon",
-    id: "88488708",
-    points: 500,
-    creator: "Community",
-    verifier: "TBD",
-    password: "Unknown"
-  },
-  {
-    name: "Acheron",
-    difficulty: "Extreme Demon",
-    id: "82040280",
-    points: 450,
-    creator: "Community",
-    verifier: "TBD",
-    password: "Unknown"
-  },
-  {
-    name: "Slaughterhouse",
-    difficulty: "Extreme Demon",
-    id: "77436731",
-    points: 400,
-    creator: "Community",
-    verifier: "TBD",
-    password: "Unknown"
-  },
-  {
-    name: "Bloodbath",
-    difficulty: "Extreme Demon",
-    id: "10565740",
-    points: 300,
-    creator: "Community",
-    verifier: "TBD",
-    password: "Unknown"
-  },
-  {
-    name: "Cataclysm",
-    difficulty: "Extreme Demon",
-    id: "3979725",
-    points: 200,
-    creator: "Community",
-    verifier: "TBD",
-    password: "Unknown"
-  }
-];
+const demons = [];
 
 let selectedLevel = 0;
 
@@ -561,23 +515,17 @@ function renderButtons(query = "") {
 }
 
 function renderDetails() {
-  const demon = demons[selectedLevel];
-  document.getElementById("level-name").textContent = demon.name;
-  document.getElementById("preview-title").textContent = demon.name;
-  document.getElementById("creator").textContent = demon.creator;
-  document.getElementById("verifier").textContent = demon.verifier;
-  document.getElementById("points").textContent = demon.points;
-  document.getElementById("level-id").textContent = demon.id;
-  document.getElementById("password").textContent = demon.password;
-
-  document.getElementById("gameplay-link").href =
-    "https://www.youtube.com/results?search_query=" +
-    encodeURIComponent("Geometry Dash " + demon.name + " completion");
-
-  document.getElementById("records").textContent =
-    "Approved player completions for " + demon.name +
-    " will be listed here after records are reviewed.";
-}
+  if (demons.length === 0) {
+    document.getElementById("level-name").textContent = "No levels yet";
+    document.getElementById("preview-title").textContent = "MCL Demon List";
+    document.getElementById("creator").textContent = "—";
+    document.getElementById("verifier").textContent = "—";
+    document.getElementById("points").textContent = "—";
+    document.getElementById("level-id").textContent = "—";
+    document.getElementById("password").textContent = "—";
+    document.getElementById("records").textContent = "No levels have been added yet.";
+    return;
+  }
 
 document.getElementById("search").addEventListener("input", event => {
   renderButtons(event.target.value);
