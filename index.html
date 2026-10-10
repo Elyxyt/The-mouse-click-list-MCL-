@@ -13,8 +13,8 @@
 
 body {
   margin: 0;
-  background: #111111;
-  color: #eeeeee;
+  background: #111;
+  color: #eee;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
 }
@@ -27,14 +27,13 @@ header {
 }
 
 h1 {
-  color: #eeeeee;
-  font-size: 27px;
-  margin: 0 0 8px;
+  font-size: 26px;
   letter-spacing: 1px;
+  margin: 0 0 8px;
 }
 
 header p {
-  color: #aaaaaa;
+  color: #aaa;
   font-size: 13px;
   margin: 0;
 }
@@ -48,23 +47,22 @@ header p {
 }
 
 .site-nav a {
-  display: inline-block;
   padding: 8px 16px;
   background: #242424;
-  border: 1px solid #444444;
+  border: 1px solid #444;
   border-radius: 3px;
-  color: #eeeeee;
+  color: #eee;
   font-size: 13px;
   text-decoration: none;
 }
 
 .site-nav a:hover {
-  background: #333333;
+  background: #333;
 }
 
 main {
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 24px auto;
   padding: 0 14px;
 }
@@ -77,12 +75,12 @@ main {
 }
 
 .list-title {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: bold;
   margin-bottom: 14px;
 }
 
-input {
+#search {
   display: block;
   width: 100%;
   padding: 11px 12px;
@@ -90,61 +88,85 @@ input {
   background: #191919;
   border: 1px solid #414141;
   border-radius: 3px;
-  color: #ffffff;
+  color: #fff;
   font-size: 14px;
 }
 
-input:focus {
-  outline: 1px solid #888888;
+#search:focus {
+  outline: 1px solid #888;
 }
 
-input::placeholder {
-  color: #888888;
+#search::placeholder {
+  color: #888;
 }
 
-.demon {
-  display: grid;
-  grid-template-columns: 38px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 10px;
-  background: #1b1b1b;
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
   border: 1px solid #353535;
   border-radius: 3px;
-  padding: 13px 10px;
-  margin-bottom: 5px;
 }
 
-.rank {
-  color: #bbbbbb;
-  font-size: 15px;
-  font-weight: bold;
+.leaderboard {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.leaderboard th {
+  background: #242424;
+  color: #bbb;
+  padding: 11px 8px;
+  border-bottom: 1px solid #444;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.leaderboard td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #303030;
+  background: #191919;
+}
+
+.leaderboard tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboard tbody tr:hover td {
+  background: #252525;
+}
+
+.rank-cell {
+  width: 52px;
+  color: #aaa;
   text-align: center;
 }
 
-.name {
-  color: #eeeeee;
+.level-link {
+  color: #eee;
   font-weight: bold;
   text-decoration: none;
 }
 
-.name:hover {
+.level-link:hover {
   text-decoration: underline;
 }
 
-.difficulty {
-  color: #aaaaaa;
+.id-cell {
+  color: #999;
   font-size: 12px;
-  margin-top: 5px;
+  white-space: nowrap;
 }
 
-.tag {
-  color: #cccccc;
-  background: #292929;
-  border: 1px solid #444444;
-  border-radius: 3px;
-  padding: 5px 7px;
-  font-size: 10px;
+.difficulty-cell {
+  color: #ccc;
   white-space: nowrap;
+}
+
+.empty-message {
+  padding: 15px;
+  color: #aaa;
 }
 
 .sidebar {
@@ -163,21 +185,21 @@ input::placeholder {
 
 .sidebar p {
   margin: 0 0 10px;
-  color: #bbbbbb;
+  color: #bbb;
   font-size: 12px;
   line-height: 1.6;
 }
 
 footer {
-  border-top: 1px solid #333333;
+  border-top: 1px solid #333;
   margin-top: 32px;
   padding: 20px 12px;
-  color: #888888;
+  color: #888;
   font-size: 12px;
   text-align: center;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 650px) {
   h1 {
     font-size: 23px;
   }
@@ -190,15 +212,21 @@ footer {
     grid-template-columns: 1fr;
   }
 
-  .demon {
-    grid-template-columns: 34px minmax(0, 1fr) auto;
-    gap: 7px;
-    padding: 12px 8px;
+  .leaderboard {
+    font-size: 12px;
   }
 
-  .tag {
-    font-size: 9px;
-    padding: 4px;
+  .leaderboard th,
+  .leaderboard td {
+    padding: 10px 6px;
+  }
+
+  .rank-cell {
+    width: 38px;
+  }
+
+  .sidebar {
+    margin-top: 2px;
   }
 }
 </style>
@@ -211,20 +239,24 @@ footer {
 
   <nav class="site-nav">
     <a href="./">Main List</a>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFiD-3s3sAuJYwpMrpUzwUWWCeSWDOiEV7rXDKXtw0awHPHg/viewform?usp=header"
-       target="_blank"
-       rel="noopener noreferrer">Submissions</a>
+    <a
+      href="https://forms.google.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >Submissions</a>
   </nav>
 </header>
+
 <main>
   <div class="page-layout">
+
     <section>
       <div class="list-title">Demon Rankings</div>
 
       <input
         id="search"
         type="search"
-        placeholder="Search for a demon..."
+        placeholder="Search demons or level IDs..."
         aria-label="Search demons">
 
       <div id="rankings"></div>
@@ -233,14 +265,15 @@ footer {
     <aside class="sidebar">
       <h2>Information</h2>
       <p>Welcome to The Mouse Click List!</p>
-      <p>Updates, announcements, rules, and other information will go here.</p>
+      <p>Updates, announcements, and list rules will appear here.</p>
+      <p>This is an independent community project.</p>
     </aside>
+
   </div>
 </main>
 
 <footer>
-  Fan-made community project. Not affiliated
-  with RobTop or Pointercrate.
+  Fan-made community project. Not affiliated with RobTop or Pointercrate.
 </footer>
 
 <script>
@@ -273,37 +306,62 @@ const demons = [
 ];
 
 function renderList(query = "") {
-  const results = demons.filter(d =>
-    d.name.toLowerCase().includes(query.toLowerCase())
+  const searchTerm = query.trim().toLowerCase();
+
+  const results = demons.filter(demon =>
+    demon.name.toLowerCase().includes(searchTerm) ||
+    demon.id.includes(searchTerm) ||
+    demon.difficulty.toLowerCase().includes(searchTerm)
   );
 
-  document.getElementById("rankings").innerHTML =
-    results.map(d => {
-      const rank = demons.indexOf(d) + 1;
+  const rankings = document.getElementById("rankings");
 
-      return `
-        <div class="demon">
-          <div class="rank">#${rank}</div>
-          <div>
-            <a class="name"
-              href="https://gdbrowser.com/${d.id}"
-              target="_blank"
-              rel="noopener noreferrer">
-              ${d.name}
-            </a>
-            <div class="difficulty">${d.difficulty}</div>
-          </div>
-          <span class="tag">DEMON</span>
-        </div>
-      `;
-    }).join("") ||
-    "<p>No demons found. Try another name!</p>";
+  if (results.length === 0) {
+    rankings.innerHTML =
+      '<div class="empty-message">No demons found. Try another search!</div>';
+    return;
+  }
+
+  rankings.innerHTML = `
+    <div class="table-wrap">
+      <table class="leaderboard">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Level</th>
+            <th>Difficulty</th>
+            <th>ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${results.map(demon => {
+            const rank = demons.indexOf(demon) + 1;
+
+            return `
+              <tr>
+                <td class="rank-cell">#${rank}</td>
+                <td>
+                  <a
+                    class="level-link"
+                    href="https://gdbrowser.com/${encodeURIComponent(demon.id)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >${demon.name}</a>
+                </td>
+                <td class="difficulty-cell">${demon.difficulty}</td>
+                <td class="id-cell">${demon.id}</td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
-document.getElementById("search")
-  .addEventListener("input", event => {
-    renderList(event.target.value);
-  });
+document.getElementById("search").addEventListener("input", event => {
+  renderList(event.target.value);
+});
 
 renderList();
 </script>
