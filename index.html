@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -252,6 +252,36 @@ main {
   line-height: 1.6;
 }
 
+.record-card {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.record-card:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.record-card h3 {
+  color: var(--text);
+  margin: 4px 0;
+}
+
+.record-card p {
+  margin: 6px 0 12px;
+}
+
+.record-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 8px;
+  background: #080b17;
+}
+
 .right-sidebar {
   border-left: 1px solid var(--line);
   padding-left: 24px;
@@ -429,16 +459,17 @@ footer {
 
       <div class="game-preview">
         <iframe
-          src="https://www.youtube-nocookie.com/embed/witXzJUbKtk"
-          title="ReTraY Geometry Dash gameplay"
+          id="main-video"
+          src="https://www.youtube-nocookie.com/embed/yev45518zsY"
+          title="The Nightmare Geometry Dash gameplay"
           loading="lazy"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen>
         </iframe>
 
-        <div class="preview-note">
-          ReTraY gameplay • Play here!
+        <div class="preview-note" id="preview-note">
+          The Nightmare gameplay • Play here!
         </div>
       </div>
 
@@ -450,7 +481,7 @@ footer {
 
         <div class="stat">
           <span class="stat-label">Level ID</span>
-          <span class="stat-value" id="level-id">—</span>
+          <span class="stat-value" id="level-id">13519</span>
         </div>
 
         <div class="stat">
@@ -462,7 +493,7 @@ footer {
       <h2 class="records-title">Records</h2>
 
       <div class="records-box" id="records">
-        Approved player completions will be listed here.
+        Loading records...
       </div>
     </section>
 
@@ -507,10 +538,13 @@ footer {
 </footer>
 
 <script>
-/* ========================================
-   MCL DEMON LIST
-   The first level is rank #1.
-======================================== */
+/*
+  MCL LEVEL LIST
+
+  The first level is rank #1.
+  Rank #1 earns 300 points.
+  Rank #150 and below earn 5 points.
+*/
 
 const demons = [
   {
@@ -520,41 +554,35 @@ const demons = [
     creator: "Jax",
     verifier: "RobiRobiLegit",
     password: "Unknown",
-    video: "https://youtu.be/yev45518zsY"
+    video: "https://www.youtube.com/embed/yev45518zsY"
   },
   {
-    name: "Retray",
+    name: "ReTraY",
     difficulty: "Easy",
     id: "6508283",
     creator: "DimaVikulov26",
     verifier: "Elyxyr",
     password: "532211",
-    video: "https://youtu.be/witXzJUbKtk"
+    video: "https://www.youtube.com/embed/witXzJUbKtk"
   }
 ];
 
-/* ========================================
-   APPROVED COMPLETION RECORDS
-======================================== */
-
+/*
+  Approved completion records.
+  Each record appears only when its level is selected.
+*/
 const completionRecords = [
   {
     player: "RobiRobiLegit",
     level: "The Nightmare",
-    video: "https://youtu.be/yev45518zsY"
+    video: "https://youtu.be/yev45518zsY?is=CfcoGmzqXUVyVsmn"
   },
   {
     player: "Elyxyt",
-    level: "Retray",
+    level: "ReTraY",
     video: "https://youtu.be/witXzJUbKtk"
   }
 ];
-
-/* ========================================
-   AUTOMATIC POINTS
-   Rank #1 = 300 points
-   Rank #150 and lower = 5 points
-======================================== */
 
 function calculatePoints(rank) {
   const highestPoints = 300;
@@ -565,27 +593,20 @@ function calculatePoints(rank) {
     return minimumPoints;
   }
 
-  const points =
-    highestPoints -
+  const points = highestPoints -
     ((rank - 1) * (highestPoints - minimumPoints)) /
     (lastRank - 1);
 
   return Math.max(minimumPoints, Math.round(points));
 }
 
-/* ========================================
-   GET A VIDEO ID FROM A YOUTUBE LINK
-======================================== */
-
 function getYouTubeVideoId(url) {
   try {
     const parsed = new URL(url);
     let id = "";
 
-    if (
-      parsed.hostname === "youtu.be" ||
-      parsed.hostname === "www.youtu.be"
-    ) {
+    if (parsed.hostname === "youtu.be" ||
+        parsed.hostname === "www.youtu.be") {
       id = parsed.pathname.split("/").filter(Boolean)[0] || "";
     } else if (
       [
@@ -608,20 +629,12 @@ function getYouTubeVideoId(url) {
     }
 
     return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : "";
-  } catch {
+  } catch (error) {
     return "";
   }
 }
 
-/* ========================================
-   SELECTED LEVEL
-======================================== */
-
 let selectedLevel = 0;
-
-/* ========================================
-   DRAW THE LEVEL LIST
-======================================== */
 
 function renderButtons(query = "") {
   const container = document.getElementById("level-buttons");
@@ -645,10 +658,8 @@ function renderButtons(query = "") {
   matches.forEach(({ demon, index }) => {
     const button = document.createElement("button");
 
-    button.className =
-      "level-button" +
+    button.className = "level-button" +
       (index === selectedLevel ? " selected" : "");
-
     button.type = "button";
 
     const rank = document.createElement("span");
@@ -662,11 +673,7 @@ function renderButtons(query = "") {
 
     button.addEventListener("click", () => {
       selectedLevel = index;
-
-      renderButtons(
-        document.getElementById("search").value
-      );
-
+      renderButtons(document.getElementById("search").value);
       renderDetails();
     });
 
@@ -674,79 +681,68 @@ function renderButtons(query = "") {
   });
 }
 
-/* ========================================
-   UPDATE LEVEL DETAILS AND MAIN VIDEO
-======================================== */
-
 function renderDetails() {
-  const demon = demons[selectedLevel];
-
-  if (!demon) {
+  if (demons.length === 0) {
+    document.getElementById("level-name").textContent = "No levels yet";
+    document.getElementById("creator").textContent = "—";
+    document.getElementById("verifier").textContent = "—";
+    document.getElementById("points").textContent = "—";
+    document.getElementById("level-id").textContent = "—";
+    document.getElementById("password").textContent = "—";
+    document.getElementById("records").textContent =
+      "No levels have been added yet.";
     return;
   }
 
-  document.getElementById("level-name").textContent =
-    demon.name;
+  const demon = demons[selectedLevel];
 
-  document.getElementById("creator").textContent =
-    demon.creator;
-
-  document.getElementById("verifier").textContent =
-    demon.verifier;
-
+  document.getElementById("level-name").textContent = demon.name;
+  document.getElementById("creator").textContent = demon.creator;
+  document.getElementById("verifier").textContent = demon.verifier;
   document.getElementById("points").textContent =
     calculatePoints(selectedLevel + 1);
-
-  document.getElementById("level-id").textContent =
-    demon.id || "Unknown";
-
+  document.getElementById("level-id").textContent = demon.id || "Unknown";
   document.getElementById("password").textContent =
-    demon.password;
+    demon.password || "Unknown";
 
-  const mainVideo = document.getElementById("main-video");
   const videoId = getYouTubeVideoId(demon.video);
 
-  if (mainVideo && videoId) {
+  const mainVideo = document.getElementById("main-video");
+
+  if (videoId) {
     mainVideo.src =
       "https://www.youtube-nocookie.com/embed/" + videoId;
-
-    mainVideo.title = demon.name + " Geometry Dash gameplay";
+  } else {
+    mainVideo.removeAttribute("src");
   }
 
-  const note = document.querySelector(".preview-note");
+  document.getElementById("main-video").title =
+    demon.name + " Geometry Dash gameplay";
 
-  if (note) {
-    note.textContent = demon.name + " gameplay";
-  }
+  document.getElementById("preview-note").textContent =
+    demon.name + " gameplay • Play here!";
 
   renderCompletionVideos();
 }
 
-/* ========================================
-   SHOW RECORDS FOR THE SELECTED LEVEL
-======================================== */
-
 function renderCompletionVideos() {
   const container = document.getElementById("records");
-
   container.replaceChildren();
 
   const currentLevel = demons[selectedLevel];
 
   const records = completionRecords.filter(record =>
-    record.level.toLowerCase() ===
-    currentLevel.name.toLowerCase()
+    record.level.toLowerCase() === currentLevel.name.toLowerCase()
   );
 
   if (records.length === 0) {
-    container.textContent =
-      "No approved player records yet.";
+    container.textContent = "No approved player records yet.";
     return;
   }
 
   records.forEach(record => {
     const card = document.createElement("div");
-    card.style.marginBottom = "18px";
+    card.className = "record-card";
 
     const heading = document.createElement("h3");
     heading.textContent = record.player;
@@ -761,25 +757,20 @@ function renderCompletionVideos() {
     if (videoId) {
       const iframe = document.createElement("iframe");
 
+      iframe.className = "record-video";
       iframe.src =
         "https://www.youtube-nocookie.com/embed/" + videoId;
-
-      iframe.title = record.player + " completion proof";
-      iframe.style.width = "100%";
-      iframe.style.aspectRatio = "16 / 9";
-      iframe.style.border = "0";
-      iframe.style.borderRadius = "8px";
-
+      iframe.title = record.player + " completion proof for " +
+        record.level;
+      iframe.loading = "lazy";
       iframe.allow =
         "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-
       iframe.allowFullscreen = true;
-      iframe.loading = "lazy";
 
       card.appendChild(iframe);
     } else {
       const message = document.createElement("p");
-      message.textContent = "Invalid YouTube video link.";
+      message.textContent = "The proof video link is invalid.";
       card.appendChild(message);
     }
 
@@ -787,16 +778,9 @@ function renderCompletionVideos() {
   });
 }
 
-/* ========================================
-   SEARCH AND START WEBSITE
-======================================== */
-
-document.getElementById("search").addEventListener(
-  "input",
-  event => {
-    renderButtons(event.target.value);
-  }
-);
+document.getElementById("search").addEventListener("input", event => {
+  renderButtons(event.target.value);
+});
 
 renderButtons();
 renderDetails();
@@ -804,3 +788,4 @@ renderDetails();
 
 </body>
 </html>
+```
