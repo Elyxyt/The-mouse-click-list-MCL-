@@ -96,7 +96,7 @@ main {
 
 .page-layout {
   display: grid;
-  grid-template-columns: 275px minmax(300px, 1fr) 290px;
+  grid-template-columns: 275px minmax(0, 1fr) 290px;
   gap: 30px;
   align-items: start;
 }
@@ -175,7 +175,6 @@ main {
   color: #bdc9f0;
 }
 
-/* Embedded gameplay video */
 .game-preview {
   width: 100%;
   border: 1px solid #3457a0;
@@ -428,11 +427,10 @@ footer {
         <span>MCL</span>
       </div>
 
-      <!-- ReTraY gameplay plays inside the website -->
       <div class="game-preview">
         <iframe
           src="https://www.youtube-nocookie.com/embed/witXzJUbKtk"
-          title="ReTraY 100%"
+          title="ReTraY Geometry Dash gameplay"
           loading="lazy"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin"
@@ -447,7 +445,7 @@ footer {
       <div class="stats">
         <div class="stat">
           <span class="stat-label">Points when completed</span>
-          <span class="stat-value" id="points">50</span>
+          <span class="stat-value" id="points">300</span>
         </div>
 
         <div class="stat">
@@ -496,7 +494,7 @@ footer {
           The Mouse Click List is a fan-made Geometry Dash ranking project.
         </p>
         <p>
-          Level points are set individually by the MCL list owner.
+          Level points are calculated automatically from their list rank.
         </p>
       </section>
     </aside>
@@ -510,9 +508,18 @@ footer {
 
 <script>
 /*
-  EDIT THIS LIST TO CHANGE LEVELS AND POINT VALUES.
-  Points are examples. Set each level's value individually.
-  Lower list number = higher ranking.
+  MCL AUTOMATIC POINT SYSTEM
+
+  Rank #1   = 300 points
+  Rank #150 = 5 points
+  Rank #151 and below = 5 points
+
+  Points are calculated from the level's position
+  in this list. No manual point values are needed.
+
+  IMPORTANT:
+  Put levels in ranking order in the demons array.
+  The first level is rank #1.
 */
 
 const demons = [
@@ -520,12 +527,205 @@ const demons = [
     name: "Retray",
     difficulty: "Easy",
     id: "6508283",
-    points: 50,
     creator: "DimaVikulov26",
     verifier: "Elyxyr",
     password: "532211"
   }
+
+
+const completionRecords = [
+  {
+    player: "Elyxyt",
+    level: "retray",
+    video: "https://youtu.be/witXzJUbKtk"
+  }
 ];
+
+function getYouTubeVideoId(url) {
+  try {
+    const parsed = new URL(url);
+    let id = "";
+
+    if (parsed.hostname === "youtu.be") {
+      id = parsed.pathname.split("/").filter(Boolean)[0] || "";
+    } else if (
+      ["youtube.com", "www.youtube.com", "m.youtube.com",
+       "youtube-nocookie.com", "www.youtube-nocookie.com"].includes(parsed.hostname)
+    ) {
+      if (parsed.pathname === "/watch") {
+        id = parsed.searchParams.get("v") || "";
+      } else {
+        const parts = parsed.pathname.split("/").filter(Boolean);
+        if (["embed", "shorts", "live"].includes(parts[0])) {
+          id = parts[1] || "";
+        }
+      }
+    }
+
+    return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : "";
+  } catch {
+    return "";
+  }
+}
+
+function renderCompletionVideos() {
+  const container = document.getElementById("records");
+  container.replaceChildren();
+
+  if (completionRecords.length === 0) {
+    container.textContent = "No approved player records yet.";
+    return;
+  }
+
+  completionRecords.forEach(record => {
+    const card = document.createElement("div");
+    card.style.marginTop = "12px";
+
+    const heading = document.createElement("h3");
+    heading.textContent = record.player;
+
+    const level = document.createElement("p");
+    level.textContent = "Completed: " + record.level;
+
+    card.append(heading, level);
+
+    const videoId = getYouTubeVideoId(record.video);
+
+    if (videoId) {
+      const iframe = document.createElement("iframe");
+      iframe.src = "https://www.youtube-nocookie.com/embed/" + videoId;
+      iframe.title = record.player + " completion proof";
+      iframe.style.width = "100%";
+      iframe.style.aspectRatio = "16 / 9";
+      iframe.style.border = "0";
+      iframe.style.borderRadius = "8px";
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      iframe.allowFullscreen = true;
+      iframe.loading = "lazy";
+      card.appendChild(iframe);
+    } else {
+      const message = document.createElement("p");
+      message.textContent = "Please add a valid YouTube link.";
+      card.appendChild(message);
+    }
+
+    container.appendChild(card);
+  });
+}
+  
+  {
+    name: "The Nightmare",
+    difficulty: "Easy Demon",
+    id: "13519",
+    creator: "Jax",
+    verifier: "RobiRobiLegit",
+    password: "Unknown"
+  }
+];
+
+
+const completionRecords = [
+  {
+    player: "RobiRobiLegit",
+    level: "The Nightmare",
+    video: "https://youtu.be/yev45518zsY?is=CfcoGmzqXUVyVsmn"
+  }
+];
+
+function getYouTubeVideoId(url) {
+  try {
+    const parsed = new URL(url);
+    let id = "";
+
+    if (parsed.hostname === "youtu.be") {
+      id = parsed.pathname.split("/").filter(Boolean)[0] || "";
+    } else if (
+      ["youtube.com", "www.youtube.com", "m.youtube.com",
+       "youtube-nocookie.com", "www.youtube-nocookie.com"].includes(parsed.hostname)
+    ) {
+      if (parsed.pathname === "/watch") {
+        id = parsed.searchParams.get("v") || "";
+      } else {
+        const parts = parsed.pathname.split("/").filter(Boolean);
+        if (["embed", "shorts", "live"].includes(parts[0])) {
+          id = parts[1] || "";
+        }
+      }
+    }
+
+    return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : "";
+  } catch {
+    return "";
+  }
+}
+
+function renderCompletionVideos() {
+  const container = document.getElementById("records");
+  container.replaceChildren();
+
+  if (completionRecords.length === 0) {
+    container.textContent = "No approved player records yet.";
+    return;
+  }
+
+  completionRecords.forEach(record => {
+    const card = document.createElement("div");
+    card.style.marginTop = "12px";
+
+    const heading = document.createElement("h3");
+    heading.textContent = record.player;
+
+    const level = document.createElement("p");
+    level.textContent = "Completed: " + record.level;
+
+    card.append(heading, level);
+
+    const videoId = getYouTubeVideoId(record.video);
+
+    if (videoId) {
+      const iframe = document.createElement("iframe");
+      iframe.src = "https://www.youtube-nocookie.com/embed/" + videoId;
+      iframe.title = record.player + " completion proof";
+      iframe.style.width = "100%";
+      iframe.style.aspectRatio = "16 / 9";
+      iframe.style.border = "0";
+      iframe.style.borderRadius = "8px";
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      iframe.allowFullscreen = true;
+      iframe.loading = "lazy";
+      card.appendChild(iframe);
+    } else {
+      const message = document.createElement("p");
+      message.textContent = "Please add a valid YouTube link.";
+      card.appendChild(message);
+    }
+
+    container.appendChild(card);
+  });
+}
+
+/*
+  Calculates points automatically from rank.
+  Rank 1 earns 300.
+  Rank 150 earns 5.
+  Every rank after 150 earns 5.
+*/
+function calculatePoints(rank) {
+  const highestPoints = 300;
+  const minimumPoints = 6.891;
+  const lastRank = 150;
+
+  if (rank >= lastRank) {
+    return minimumPoints;
+  }
+
+  const points =
+    highestPoints -
+    ((rank - 1) * (highestPoints - minimumPoints)) /
+    (lastRank - 1);
+
+  return Math.max(minimumPoints, Math.round(points));
+}
 
 let selectedLevel = 0;
 
@@ -537,7 +737,7 @@ function renderButtons(query = "") {
     .map((demon, index) => ({ demon, index }))
     .filter(item =>
       item.demon.name.toLowerCase().includes(term) ||
-      item.demon.id.includes(term) ||
+      item.demon.id.toLowerCase().includes(term) ||
       item.demon.difficulty.toLowerCase().includes(term)
     );
 
@@ -589,12 +789,14 @@ function renderDetails() {
   }
 
   const demon = demons[selectedLevel];
+  const rank = selectedLevel + 1;
+  const points = calculatePoints(rank);
 
   document.getElementById("level-name").textContent = demon.name;
   document.getElementById("creator").textContent = demon.creator;
   document.getElementById("verifier").textContent = demon.verifier;
-  document.getElementById("points").textContent = demon.points;
-  document.getElementById("level-id").textContent = demon.id;
+  document.getElementById("points").textContent = points;
+  document.getElementById("level-id").textContent = demon.id || "Unknown";
   document.getElementById("password").textContent = demon.password;
 
   document.getElementById("records").textContent =
@@ -607,6 +809,7 @@ document.getElementById("search").addEventListener("input", event => {
 
 renderButtons();
 renderDetails();
+renderCompletionVideos();
 </script>
 
 </body>
