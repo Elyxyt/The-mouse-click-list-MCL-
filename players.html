@@ -169,51 +169,118 @@ nav a.submit {
 </main>
 
 <script>
-/*
-  MCL PLAYER DATA
-
-  The Nightmare: rank #1 = 300 points.
-  ReTraY: rank #2 = 298 list points, but Elyxyt's
-  recorded completion is currently worth 50 points.
-
-  Player totals are calculated from their completed records.
-*/
-
-const players = [
-  {
-    name: "RobiRobiLegit",
-    verified: [
-      { rank: 1, name: "The Nightmare", points: 300 }
-    ],
-    completed: [
-      { rank: 1, name: "The Nightmare", points: 300 }
-    ]
-  },
-  {
-    name: "Elyxyt",
-    verified: [
-      { rank: 2, name: "Retray", points: 298 }
-    ],
-    completed: [
-      { rank: 2, name: "Retray", points: 298 }
-    ]
-  }
-];
-
-players.forEach(player => {
-  player.points = player.completed.reduce(
-    (total, record) => total + record.points, 0
-  );
-});
-
-players.sort((a, b) =>
-  b.points - a.points || a.name.localeCompare(b.name)
-);
+const players = [];
 
 let selected = 0;
+let allCompletions = [];
 
 function formatPoints(n) {
   return Number(n).toFixed(3);
+}
+
+function calculatePoints(rank) {
+  const highestPoints = 300;
+  const minimumPoints = 5;
+  const lastRank = 150;
+
+  if (rank >= lastRank) return minimumPoints;
+
+  return Math.max(
+    minimumPoints,
+    Math.round(
+      highestPoints -
+      ((rank - 1) * (highestPoints - minimumPoints)) /
+      (lastRank - 1)
+    )
+  );
+}
+
+async function loadLeaderboard() {
+  const list = document.getElementById("players");
+  list.textContent = "Loading leaderboard...";
+
+  try {
+    const [completionResponse, indexResponse] = await Promise.all([
+      fetch("./completions.json"),
+      fetch("./index.html")
+    ]);
+
+    if (!completionResponse.ok || !indexResponse.ok) {
+      throw new Error("Could not load the leaderboard data.");
+    }
+
+    allCompletions = await completionResponse.json();
+
+    const indexHTML = await indexResponse.text();
+    const doc = new DOMParser().parseFromString(indexHTML, "text/html");
+    const scriptText = Array.from(doc.scripts)
+      .map(script => script.textContent)
+      .join("\n");
+
+    const match = scriptText.match(/const\s+demons\s*=\s*(\[[\s\S]*?\]);/);
+
+    if (!match) {
+      throw new Error("Could not find the demon list in index.html.");
+    }
+
+    const demons = Function('"use strict"; return (' + match[1] + ');')();
+
+    const rankByLevel = new Map(
+      demons.map((demon, index) => [
+        demon.name.trim().toLowerCase(),
+        index + 1
+      ])
+    );
+
+    const playerMap = new Map();
+
+    allCompletions.forEach(completion => {
+      const playerName = completion.player.trim();
+      const rank = rankByLevel.get(completion.level.trim().toLowerCase());
+
+      if (!rank) return;
+
+      if (!playerMap.has(playerName.toLowerCase())) {
+        playerMap.set(playerName.toLowerCase(), {
+          name: playerName,
+          verified: [],
+          completed: []
+        });
+      }
+
+      const player = playerMap.get(playerName.toLowerCase());
+      const record = {
+        rank,
+        name: completion.level,
+        points: calculatePoints(rank),
+        video: completion.video || ""
+      };
+
+      player.completed.push(record);
+      player.verified.push(record);
+    });
+
+    players.splice(0, players.length, ...playerMap.values());
+
+    players.forEach(player => {
+      player.completed.sort((a, b) => a.rank - b.rank);
+      player.verified.sort((a, b) => a.rank - b.rank);
+      player.points = player.completed.reduce(
+        (total, record) => total + record.points, 0
+      );
+    });
+
+    players.sort((a, b) =>
+      b.points - a.points || a.name.localeCompare(b.name)
+    );
+
+    selected = 0;
+    renderPlayers();
+    renderDetails();
+  } catch (error) {
+    list.textContent = "Could not load leaderboard data. Check that completions.json is saved correctly.";
+    console.error(error);
+  }
 }
 
 function renderPlayers() {
@@ -254,7 +321,7 @@ function renderPlayers() {
   if (!list.children.length) {
     const message = document.createElement("p");
     message.className = "empty";
-    message.textContent = "No players found.";
+    message.textContent = query ? "No players found." : "No approved completions yet.";
     list.appendChild(message);
   }
 }
@@ -279,22 +346,20 @@ function fillRecords(id, records) {
   container.innerHTML = renderRecords(records);
 
   records.forEach((record, index) => {
-    const name = container.querySelector(
-      '[data-record="' + index + '"]'
-    );
+    const name = container.querySelector('[data-record="' + index + '"]');
     if (name) name.textContent = record.name;
   });
 }
 
 function renderDetails() {
+  const details = document.getElementById("details");
+
   if (!players.length) {
-    document.getElementById("details").textContent =
-      "No players have been added yet.";
+    details.textContent = "No approved completions yet.";
     return;
   }
 
   const p = players[selected];
-  const details = document.getElementById("details");
 
   details.innerHTML =
     '<h1 class="player-heading">#' + (selected + 1) +
@@ -304,7 +369,7 @@ function renderDetails() {
     '<div id="verifiedRecords"></div>' +
     '<h2 class="section-title">Completed (' + p.completed.length + ')</h2>' +
     '<div id="completedRecords"></div>' +
-    '<p class="note">The Mouse Click List · Player totals come from the records listed here. Only approved completions should earn points.</p>';
+    '<p class="note">The Mouse Click List · Points are calculated from current demon rankings. Only approved completions should be included in completions.json.</p>';
 
   document.getElementById("selectedName").textContent = p.name;
 
@@ -314,8 +379,7 @@ function renderDetails() {
 
 document.getElementById("search").addEventListener("input", renderPlayers);
 
-renderPlayers();
-renderDetails();
+loadLeaderboard();
 </script>
 </body>
 </html>
