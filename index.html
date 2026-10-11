@@ -506,9 +506,11 @@ footer {
   Fan-made community project. Not affiliated with RobTop or Pointercrate.
 </footer>
 
-
 <script>
-
+/* ========================================
+   MCL DEMON LIST
+   The first level is rank #1.
+======================================== */
 
 const demons = [
   {
@@ -518,7 +520,7 @@ const demons = [
     creator: "Jax",
     verifier: "RobiRobiLegit",
     password: "Unknown",
-    video: "https://www.youtube.com/embed/yev45518zsY"
+    video: "https://youtu.be/yev45518zsY"
   },
   {
     name: "Retray",
@@ -527,43 +529,78 @@ const demons = [
     creator: "DimaVikulov26",
     verifier: "Elyxyr",
     password: "532211",
-    video: "https://www.youtube.com/embed/witXzJUbKtk"
+    video: "https://youtu.be/witXzJUbKtk"
   }
 ];
+
+/* ========================================
+   APPROVED COMPLETION RECORDS
+======================================== */
+
+const completionRecords = [
+  {
+    player: "RobiRobiLegit",
+    level: "The Nightmare",
+    video: "https://youtu.be/yev45518zsY"
+  },
+  {
+    player: "Elyxyt",
+    level: "Retray",
+    video: "https://youtu.be/witXzJUbKtk"
+  }
+];
+
+/* ========================================
+   AUTOMATIC POINTS
+   Rank #1 = 300 points
+   Rank #150 and lower = 5 points
+======================================== */
 
 function calculatePoints(rank) {
   const highestPoints = 300;
   const minimumPoints = 5;
   const lastRank = 150;
 
-  if (rank >= lastRank) return minimumPoints;
+  if (rank >= lastRank) {
+    return minimumPoints;
+  }
 
-  return Math.max(
-    minimumPoints,
-    Math.round(
-      highestPoints -
-      ((rank - 1) * (highestPoints - minimumPoints)) /
-      (lastRank - 1)
-    )
-  );
+  const points =
+    highestPoints -
+    ((rank - 1) * (highestPoints - minimumPoints)) /
+    (lastRank - 1);
+
+  return Math.max(minimumPoints, Math.round(points));
 }
+
+/* ========================================
+   GET A VIDEO ID FROM A YOUTUBE LINK
+======================================== */
 
 function getYouTubeVideoId(url) {
   try {
     const parsed = new URL(url);
     let id = "";
 
-    if (parsed.hostname === "youtu.be" ||
-        parsed.hostname === "www.youtu.be") {
+    if (
+      parsed.hostname === "youtu.be" ||
+      parsed.hostname === "www.youtu.be"
+    ) {
       id = parsed.pathname.split("/").filter(Boolean)[0] || "";
     } else if (
-      ["youtube.com", "www.youtube.com", "m.youtube.com",
-       "youtube-nocookie.com", "www.youtube-nocookie.com"].includes(parsed.hostname)
+      [
+        "youtube.com",
+        "www.youtube.com",
+        "m.youtube.com",
+        "youtube-nocookie.com",
+        "www.youtube-nocookie.com"
+      ].includes(parsed.hostname)
     ) {
       if (parsed.pathname === "/watch") {
         id = parsed.searchParams.get("v") || "";
       } else {
         const parts = parsed.pathname.split("/").filter(Boolean);
+
         if (["embed", "shorts", "live"].includes(parts[0])) {
           id = parts[1] || "";
         }
@@ -576,7 +613,15 @@ function getYouTubeVideoId(url) {
   }
 }
 
+/* ========================================
+   SELECTED LEVEL
+======================================== */
+
 let selectedLevel = 0;
+
+/* ========================================
+   DRAW THE LEVEL LIST
+======================================== */
 
 function renderButtons(query = "") {
   const container = document.getElementById("level-buttons");
@@ -592,15 +637,18 @@ function renderButtons(query = "") {
 
   container.replaceChildren();
 
-  if (!matches.length) {
+  if (matches.length === 0) {
     container.textContent = "No levels found.";
     return;
   }
 
   matches.forEach(({ demon, index }) => {
     const button = document.createElement("button");
-    button.className = "level-button" +
+
+    button.className =
+      "level-button" +
       (index === selectedLevel ? " selected" : "");
+
     button.type = "button";
 
     const rank = document.createElement("span");
@@ -614,7 +662,11 @@ function renderButtons(query = "") {
 
     button.addEventListener("click", () => {
       selectedLevel = index;
-      renderButtons(document.getElementById("search").value);
+
+      renderButtons(
+        document.getElementById("search").value
+      );
+
       renderDetails();
     });
 
@@ -622,38 +674,80 @@ function renderButtons(query = "") {
   });
 }
 
-function renderDetails() {document.getElementById("main-video").src =
-  demons[selectedLevel].video.replace(
-    "www.youtube.com/embed/",
-    "www.youtube-nocookie.com/embed/"
-  );
+/* ========================================
+   UPDATE LEVEL DETAILS AND MAIN VIDEO
+======================================== */
 
-  document.getElementById("level-name").textContent = demon.name;
-  document.getElementById("creator").textContent = demon.creator;
-  document.getElementById("verifier").textContent = demon.verifier;
+function renderDetails() {
+  const demon = demons[selectedLevel];
+
+  if (!demon) {
+    return;
+  }
+
+  document.getElementById("level-name").textContent =
+    demon.name;
+
+  document.getElementById("creator").textContent =
+    demon.creator;
+
+  document.getElementById("verifier").textContent =
+    demon.verifier;
+
   document.getElementById("points").textContent =
     calculatePoints(selectedLevel + 1);
-  document.getElementById("level-id").textContent = demon.id || "Unknown";
-  document.getElementById("password").textContent = demon.password;
+
+  document.getElementById("level-id").textContent =
+    demon.id || "Unknown";
+
+  document.getElementById("password").textContent =
+    demon.password;
+
+  const mainVideo = document.getElementById("main-video");
+  const videoId = getYouTubeVideoId(demon.video);
+
+  if (mainVideo && videoId) {
+    mainVideo.src =
+      "https://www.youtube-nocookie.com/embed/" + videoId;
+
+    mainVideo.title = demon.name + " Geometry Dash gameplay";
+  }
+
+  const note = document.querySelector(".preview-note");
+
+  if (note) {
+    note.textContent = demon.name + " gameplay";
+  }
 
   renderCompletionVideos();
 }
 
+/* ========================================
+   SHOW RECORDS FOR THE SELECTED LEVEL
+======================================== */
+
 function renderCompletionVideos() {
   const container = document.getElementById("records");
+
   container.replaceChildren();
 
+  const currentLevel = demons[selectedLevel];
+
   const records = completionRecords.filter(record =>
-    record.level.toLowerCase() === demons[selectedLevel].name.toLowerCase()
+    record.level.toLowerCase() ===
+    currentLevel.name.toLowerCase()
   );
 
-  if (!records.length) {
-    container.textContent = "No approved player records yet.";
+  if (records.length === 0) {
+    container.textContent =
+      "No approved player records yet.";
     return;
   }
 
   records.forEach(record => {
     const card = document.createElement("div");
+    card.style.marginBottom = "18px";
+
     const heading = document.createElement("h3");
     heading.textContent = record.player;
 
@@ -666,19 +760,26 @@ function renderCompletionVideos() {
 
     if (videoId) {
       const iframe = document.createElement("iframe");
-      iframe.src = "https://www.youtube-nocookie.com/embed/" + videoId;
+
+      iframe.src =
+        "https://www.youtube-nocookie.com/embed/" + videoId;
+
       iframe.title = record.player + " completion proof";
       iframe.style.width = "100%";
       iframe.style.aspectRatio = "16 / 9";
       iframe.style.border = "0";
       iframe.style.borderRadius = "8px";
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+
+      iframe.allow =
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+
       iframe.allowFullscreen = true;
       iframe.loading = "lazy";
+
       card.appendChild(iframe);
     } else {
       const message = document.createElement("p");
-      message.textContent = "Invalid YouTube link.";
+      message.textContent = "Invalid YouTube video link.";
       card.appendChild(message);
     }
 
@@ -686,9 +787,16 @@ function renderCompletionVideos() {
   });
 }
 
-document.getElementById("search").addEventListener("input", event => {
-  renderButtons(event.target.value);
-});
+/* ========================================
+   SEARCH AND START WEBSITE
+======================================== */
+
+document.getElementById("search").addEventListener(
+  "input",
+  event => {
+    renderButtons(event.target.value);
+  }
+);
 
 renderButtons();
 renderDetails();
