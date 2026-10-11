@@ -622,8 +622,11 @@ function renderButtons(query = "") {
   });
 }
 
-function renderDetails() {
-  const demon = demons[selectedLevel];
+function renderDetails() {document.getElementById("main-video").src =
+  demons[selectedLevel].video.replace(
+    "www.youtube.com/embed/",
+    "www.youtube-nocookie.com/embed/"
+  );
 
   document.getElementById("level-name").textContent = demon.name;
   document.getElementById("creator").textContent = demon.creator;
