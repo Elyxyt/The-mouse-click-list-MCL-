@@ -1,10 +1,11 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MCL Player Leaderboard</title>
+
 <style>
 :root {
   --blue: #244991;
@@ -57,10 +58,7 @@ nav a.submit {
   padding: 30px;
 }
 .left { min-width: 0; }
-.page-title {
-  margin: 0 0 18px;
-  font-size: 27px;
-}
+.page-title { margin: 0 0 18px; font-size: 27px; }
 .search {
   width: 100%;
   background: var(--panel);
@@ -94,9 +92,7 @@ nav a.submit {
 .player.selected { background: var(--blue); }
 .rank, .points { font-variant-numeric: tabular-nums; }
 .points { color: #e0dfeb; }
-.player-name {
-  overflow-wrap: anywhere;
-}
+.player-name { overflow-wrap: anywhere; }
 .right { min-width: 0; padding: 2px 0 30px; }
 .player-heading {
   font-size: clamp(32px, 5vw, 62px);
@@ -126,10 +122,7 @@ nav a.submit {
 }
 .record-rank { color: #d0cfda; }
 .record-name { overflow-wrap: anywhere; }
-.record-points {
-  text-align: right;
-  white-space: nowrap;
-}
+.record-points { text-align: right; white-space: nowrap; }
 .empty { color: var(--muted); padding: 18px 0; }
 .note {
   color: var(--muted);
@@ -154,13 +147,14 @@ nav a.submit {
 }
 </style>
 </head>
+
 <body>
 <nav>
   <div class="logo">MCL<span class="version"> v1.0.0</span></div>
   <a href="./">List</a>
   <a class="active" href="players.html">Leaderboard</a>
   <a href="">Roulette</a>
-  <a class="submit" href="https://docs.google.com/forms/d/e/1FAIpQLSfFiD-3s3sAuJYwpMrpUzwUWWCeSWDOiEV7rXDKXtw0awHPHg/viewform?usp=header">Submit Record</a>
+  <a class="submit" href="https://docs.google.com/forms/d/e/1FAIpQLSfFiD-3s3sAuJYwpMrpUzwUWWCeSWDOiEV7rXDKXtw0awHPHg/viewform?usp=header" target="_blank" rel="noopener noreferrer">Submit Record</a>
 </nav>
 
 <main class="layout">
@@ -175,21 +169,47 @@ nav a.submit {
 </main>
 
 <script>
+/*
+  MCL PLAYER DATA
+
+  The Nightmare: rank #1 = 300 points.
+  ReTraY: rank #2 = 298 list points, but Elyxyt's
+  recorded completion is currently worth 50 points.
+
+  Player totals are calculated from their completed records.
+*/
 
 const players = [
   {
-    name: "Elyxyt",
-    points: 50,
+    name: "RobiRobiLegit",
     verified: [
-      { rank: 1, name: "Retray", points: 50 }
+      { rank: 1, name: "The Nightmare", points: 300 }
     ],
     completed: [
-      { rank: 1, name: "Retray", points: 50 }
+      { rank: 1, name: "The Nightmare", points: 300 }
+    ]
+  },
+  {
+    name: "Elyxyt",
+    verified: [
+      { rank: 2, name: "Retray", points: 298 }
+    ],
+    completed: [
+      { rank: 2, name: "Retray", points: 298 }
     ]
   }
 ];
 
-players.sort((a, b) => b.points - a.points);
+players.forEach(player => {
+  player.points = player.completed.reduce(
+    (total, record) => total + record.points, 0
+  );
+});
+
+players.sort((a, b) =>
+  b.points - a.points || a.name.localeCompare(b.name)
+);
+
 let selected = 0;
 
 function formatPoints(n) {
@@ -199,28 +219,43 @@ function formatPoints(n) {
 function renderPlayers() {
   const query = document.getElementById("search").value.toLowerCase();
   const list = document.getElementById("players");
-  list.innerHTML = "";
+  list.replaceChildren();
 
   players.forEach((p, i) => {
     if (!p.name.toLowerCase().includes(query)) return;
 
     const button = document.createElement("button");
     button.className = "player" + (i === selected ? " selected" : "");
-    button.innerHTML =
-      '<span class="rank">#' + (i + 1) + '</span>' +
-      '<span class="points">' + formatPoints(p.points) + '</span>' +
-      '<span class="player-name"></span>';
-    button.querySelector(".player-name").textContent = p.name;
-    button.onclick = () => {
+    button.type = "button";
+
+    const rank = document.createElement("span");
+    rank.className = "rank";
+    rank.textContent = "#" + (i + 1);
+
+    const points = document.createElement("span");
+    points.className = "points";
+    points.textContent = formatPoints(p.points);
+
+    const name = document.createElement("span");
+    name.className = "player-name";
+    name.textContent = p.name;
+
+    button.append(rank, points, name);
+
+    button.addEventListener("click", () => {
       selected = i;
       renderPlayers();
       renderDetails();
-    };
+    });
+
     list.appendChild(button);
   });
 
   if (!list.children.length) {
-    list.innerHTML = '<p class="empty">No players found.</p>';
+    const message = document.createElement("p");
+    message.className = "empty";
+    message.textContent = "No players found.";
+    list.appendChild(message);
   }
 }
 
@@ -229,47 +264,59 @@ function renderRecords(records) {
     return '<p class="empty">No records added yet.</p>';
   }
 
-  return records.map(r =>
+  return records.map((record, index) =>
     '<div class="record">' +
-      '<span class="record-rank">#' + r.rank + '</span>' +
-      '<span class="record-name"></span>' +
-      '<span class="record-points">+' + formatPoints(r.points) + '</span>' +
+      '<span class="record-rank">#' + record.rank + '</span>' +
+      '<span class="record-name" data-record="' + index + '"></span>' +
+      '<span class="record-points">+' +
+        formatPoints(record.points) + '</span>' +
     '</div>'
   ).join("");
 }
 
+function fillRecords(id, records) {
+  const container = document.getElementById(id);
+  container.innerHTML = renderRecords(records);
+
+  records.forEach((record, index) => {
+    const name = container.querySelector(
+      '[data-record="' + index + '"]'
+    );
+    if (name) name.textContent = record.name;
+  });
+}
+
 function renderDetails() {
+  if (!players.length) {
+    document.getElementById("details").textContent =
+      "No players have been added yet.";
+    return;
+  }
+
   const p = players[selected];
   const details = document.getElementById("details");
 
   details.innerHTML =
     '<h1 class="player-heading">#' + (selected + 1) +
     ' <span id="selectedName"></span></h1>' +
-    '<div class="total">' + formatPoints(p.points) + '</div>' +
+    '<div class="total">' + formatPoints(p.points) + ' points</div>' +
     '<h2 class="section-title">Verified (' + p.verified.length + ')</h2>' +
     '<div id="verifiedRecords"></div>' +
     '<h2 class="section-title">Completed (' + p.completed.length + ')</h2>' +
     '<div id="completedRecords"></div>' +
-    '<p class="note">The Mouse Click List · Player points and records are example data. Replace them with verified MCL results.</p>';
+    '<p class="note">The Mouse Click List · Player totals come from the records listed here. Only approved completions should earn points.</p>';
 
   document.getElementById("selectedName").textContent = p.name;
-
-  function fillRecords(id, records) {
-    const container = document.getElementById(id);
-    container.innerHTML = renderRecords(records);
-    const names = container.querySelectorAll(".record-name");
-    records.forEach((r, i) => {
-      names[i].textContent = r.name;
-    });
-  }
 
   fillRecords("verifiedRecords", p.verified);
   fillRecords("completedRecords", p.completed);
 }
 
 document.getElementById("search").addEventListener("input", renderPlayers);
+
 renderPlayers();
 renderDetails();
 </script>
 </body>
 </html>
+```
