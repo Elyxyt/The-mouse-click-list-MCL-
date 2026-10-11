@@ -506,22 +506,8 @@ footer {
   Fan-made community project. Not affiliated with RobTop or Pointercrate.
 </footer>
 
+
 <script>
-/*
-  MCL AUTOMATIC POINT SYSTEM
-
-  Rank #1   = 300 points
-  Rank #150 = 5 points
-  Rank #151 and below = 5 points
-
-  Points are calculated from the level's position
-  in this list. No manual point values are needed.
-
-  IMPORTANT:
-  Put levels in ranking order in the demons array.
-  The first level is rank #1.
-*/
-
 const demons = [
   {
     name: "Retray",
@@ -530,9 +516,7 @@ const demons = [
     creator: "DimaVikulov26",
     verifier: "Elyxyr",
     password: "532211"
-  }
-];
-  
+  },
   {
     name: "The Nightmare",
     difficulty: "Easy Demon",
@@ -545,25 +529,41 @@ const demons = [
 
 const completionRecords = [
   {
+    player: "Elyxyt",
+    level: "Retray",
+    video: "https://youtu.be/witXzJUbKtk"
+  },
+  {
     player: "RobiRobiLegit",
     level: "The Nightmare",
-    video: "https://youtu.be/yev45518zsY?is=CfcoGmzqXUVyVsmn"
+    video: "https://youtu.be/yev45518zsY"
   }
 ];
 
-  {
-    player: "Elyxyt",
-    level: "retray",
-    video: "https://youtu.be/witXzJUbKtk"
-  }
-];
-  
+function calculatePoints(rank) {
+  const highestPoints = 300;
+  const minimumPoints = 5;
+  const lastRank = 150;
+
+  if (rank >= lastRank) return minimumPoints;
+
+  return Math.max(
+    minimumPoints,
+    Math.round(
+      highestPoints -
+      ((rank - 1) * (highestPoints - minimumPoints)) /
+      (lastRank - 1)
+    )
+  );
+}
+
 function getYouTubeVideoId(url) {
   try {
     const parsed = new URL(url);
     let id = "";
 
-    if (parsed.hostname === "youtu.be") {
+    if (parsed.hostname === "youtu.be" ||
+        parsed.hostname === "www.youtu.be") {
       id = parsed.pathname.split("/").filter(Boolean)[0] || "";
     } else if (
       ["youtube.com", "www.youtube.com", "m.youtube.com",
@@ -585,19 +585,81 @@ function getYouTubeVideoId(url) {
   }
 }
 
+let selectedLevel = 0;
+
+function renderButtons(query = "") {
+  const container = document.getElementById("level-buttons");
+  const term = query.trim().toLowerCase();
+
+  const matches = demons
+    .map((demon, index) => ({ demon, index }))
+    .filter(({ demon }) =>
+      demon.name.toLowerCase().includes(term) ||
+      demon.id.toLowerCase().includes(term) ||
+      demon.difficulty.toLowerCase().includes(term)
+    );
+
+  container.replaceChildren();
+
+  if (!matches.length) {
+    container.textContent = "No levels found.";
+    return;
+  }
+
+  matches.forEach(({ demon, index }) => {
+    const button = document.createElement("button");
+    button.className = "level-button" +
+      (index === selectedLevel ? " selected" : "");
+    button.type = "button";
+
+    const rank = document.createElement("span");
+    rank.className = "level-rank";
+    rank.textContent = "#" + (index + 1);
+
+    const name = document.createElement("span");
+    name.textContent = demon.name;
+
+    button.append(rank, name);
+
+    button.addEventListener("click", () => {
+      selectedLevel = index;
+      renderButtons(document.getElementById("search").value);
+      renderDetails();
+    });
+
+    container.appendChild(button);
+  });
+}
+
+function renderDetails() {
+  const demon = demons[selectedLevel];
+
+  document.getElementById("level-name").textContent = demon.name;
+  document.getElementById("creator").textContent = demon.creator;
+  document.getElementById("verifier").textContent = demon.verifier;
+  document.getElementById("points").textContent =
+    calculatePoints(selectedLevel + 1);
+  document.getElementById("level-id").textContent = demon.id || "Unknown";
+  document.getElementById("password").textContent = demon.password;
+
+  renderCompletionVideos();
+}
+
 function renderCompletionVideos() {
   const container = document.getElementById("records");
   container.replaceChildren();
 
-  if (completionRecords.length === 0) {
+  const records = completionRecords.filter(record =>
+    record.level.toLowerCase() === demons[selectedLevel].name.toLowerCase()
+  );
+
+  if (!records.length) {
     container.textContent = "No approved player records yet.";
     return;
   }
 
-  completionRecords.forEach(record => {
+  records.forEach(record => {
     const card = document.createElement("div");
-    card.style.marginTop = "12px";
-
     const heading = document.createElement("h3");
     heading.textContent = record.player;
 
@@ -622,111 +684,12 @@ function renderCompletionVideos() {
       card.appendChild(iframe);
     } else {
       const message = document.createElement("p");
-      message.textContent = "Please add a valid YouTube link.";
+      message.textContent = "Invalid YouTube link.";
       card.appendChild(message);
     }
 
     container.appendChild(card);
   });
-}
-
-/*
-  Calculates points automatically from rank.
-  Rank 1 earns 300.
-  Rank 150 earns 5.
-  Every rank after 150 earns 5.
-*/
-function calculatePoints(rank) {
-  const highestPoints = 300;
-  const minimumPoints = 6.891;
-  const lastRank = 150;
-
-  if (rank >= lastRank) {
-    return minimumPoints;
-  }
-
-  const points =
-    highestPoints -
-    ((rank - 1) * (highestPoints - minimumPoints)) /
-    (lastRank - 1);
-
-  return Math.max(minimumPoints, Math.round(points));
-}
-
-let selectedLevel = 0;
-
-function renderButtons(query = "") {
-  const term = query.trim().toLowerCase();
-  const container = document.getElementById("level-buttons");
-
-  const matches = demons
-    .map((demon, index) => ({ demon, index }))
-    .filter(item =>
-      item.demon.name.toLowerCase().includes(term) ||
-      item.demon.id.toLowerCase().includes(term) ||
-      item.demon.difficulty.toLowerCase().includes(term)
-    );
-
-  if (!matches.length) {
-    container.textContent = "No levels found.";
-    return;
-  }
-
-  container.replaceChildren();
-
-  matches.forEach(({ demon, index }) => {
-    const button = document.createElement("button");
-
-    button.className = "level-button" +
-      (index === selectedLevel ? " selected" : "");
-
-    button.type = "button";
-
-    const rank = document.createElement("span");
-    rank.className = "level-rank";
-    rank.textContent = "#" + (index + 1);
-
-    const name = document.createElement("span");
-    name.textContent = demon.name;
-
-    button.append(rank, name);
-
-    button.addEventListener("click", () => {
-      selectedLevel = index;
-      renderButtons(document.getElementById("search").value);
-      renderDetails();
-    });
-
-    container.appendChild(button);
-  });
-}
-
-function renderDetails() {
-  if (demons.length === 0) {
-    document.getElementById("level-name").textContent = "No levels yet";
-    document.getElementById("creator").textContent = "—";
-    document.getElementById("verifier").textContent = "—";
-    document.getElementById("points").textContent = "—";
-    document.getElementById("level-id").textContent = "—";
-    document.getElementById("password").textContent = "—";
-    document.getElementById("records").textContent =
-      "No levels have been added yet.";
-    return;
-  }
-
-  const demon = demons[selectedLevel];
-  const rank = selectedLevel + 1;
-  const points = calculatePoints(rank);
-
-  document.getElementById("level-name").textContent = demon.name;
-  document.getElementById("creator").textContent = demon.creator;
-  document.getElementById("verifier").textContent = demon.verifier;
-  document.getElementById("points").textContent = points;
-  document.getElementById("level-id").textContent = demon.id || "Unknown";
-  document.getElementById("password").textContent = demon.password;
-
-  document.getElementById("records").textContent =
-    "No approved player records yet.";
 }
 
 document.getElementById("search").addEventListener("input", event => {
@@ -735,7 +698,6 @@ document.getElementById("search").addEventListener("input", event => {
 
 renderButtons();
 renderDetails();
-renderCompletionVideos();
 </script>
 
 </body>
