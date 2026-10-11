@@ -51,7 +51,10 @@ header {
   letter-spacing: -1px;
 }
 
-.version { font-size: 14px; font-weight: bold; }
+.version {
+  font-size: 14px;
+  font-weight: bold;
+}
 
 .site-nav {
   display: flex;
@@ -136,7 +139,9 @@ main {
   cursor: pointer;
 }
 
-.level-button:hover { background: #292b35; }
+.level-button:hover {
+  background: #292b35;
+}
 
 .level-button.selected {
   background: var(--blue);
@@ -170,62 +175,26 @@ main {
   color: #bdc9f0;
 }
 
+/* Embedded gameplay video */
 .game-preview {
-  position: relative;
-  min-height: 260px;
-  aspect-ratio: 16 / 9;
+  width: 100%;
   border: 1px solid #3457a0;
   border-radius: 10px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 70% 40%, #1555a9 0, transparent 25%),
-    linear-gradient(135deg, #050912, #102b66 48%, #080b17);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px;
+  background: #080b17;
 }
 
-.game-preview::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: .65;
-  background:
-    repeating-linear-gradient(45deg, transparent 0 35px,
-      rgba(0,190,255,.25) 36px 39px, transparent 40px 70px);
-  pointer-events: none;
-}
-
-.preview-title, .play-link {
-  position: relative;
-  z-index: 1;
-}
-
-.preview-title {
-  font-size: 20px;
-  font-weight: bold;
-  text-shadow: 0 2px 6px black;
-}
-
-.play-link {
-  align-self: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 82px;
-  height: 58px;
-  background: #f5223d;
-  color: white;
-  text-decoration: none;
-  border-radius: 15px;
-  font-size: 28px;
+.game-preview iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
 }
 
 .preview-note {
-  position: relative;
-  z-index: 1;
+  padding: 10px;
   color: #d5dffb;
+  background: #101a35;
   font-size: 12px;
 }
 
@@ -242,7 +211,9 @@ main {
   overflow-wrap: anywhere;
 }
 
-.stat:last-child { border-right: 0; }
+.stat:last-child {
+  border-right: 0;
+}
 
 .stat-label {
   display: block;
@@ -293,7 +264,9 @@ main {
   margin: 6px 0 28px;
 }
 
-.side-section { margin-bottom: 32px; }
+.side-section {
+  margin-bottom: 32px;
+}
 
 .side-section h2 {
   font-size: 25px;
@@ -329,10 +302,15 @@ footer {
 }
 
 @media (max-width: 1050px) {
-  header { flex-wrap: wrap; justify-content: center; }
+  header {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
   .page-layout {
     grid-template-columns: 230px minmax(0, 1fr);
   }
+
   .right-sidebar {
     grid-column: 1 / -1;
     border-left: 0;
@@ -345,24 +323,60 @@ footer {
 }
 
 @media (max-width: 650px) {
-  header { padding: 16px 12px; gap: 12px; }
-  .brand h1 { font-size: 29px; }
-  .site-nav { gap: 2px; }
-  .site-nav a { padding: 10px 8px; font-size: 13px; }
-  main { padding: 18px 12px; }
-  .page-layout { grid-template-columns: 1fr; gap: 24px; }
+  header {
+    padding: 16px 12px;
+    gap: 12px;
+  }
+
+  .brand h1 {
+    font-size: 29px;
+  }
+
+  .site-nav {
+    gap: 2px;
+  }
+
+  .site-nav a {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  main {
+    padding: 18px 12px;
+  }
+
+  .page-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
   .level-list {
     border-right: 0;
     border-bottom: 1px solid var(--line);
     padding: 0 0 18px;
   }
-  .level-button { padding: 10px 12px; }
+
+  .level-button {
+    padding: 10px 12px;
+  }
+
   .right-sidebar {
     grid-column: auto;
     grid-template-columns: 1fr;
   }
-  .game-preview { min-height: 200px; }
-  .details { grid-template-columns: 100px 1fr; font-size: 15px; }
+
+  .details {
+    grid-template-columns: 100px 1fr;
+    font-size: 15px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  .stat-value {
+    font-size: 19px;
+  }
 }
 </style>
 </head>
@@ -378,17 +392,25 @@ footer {
     <a class="active" href="./">List</a>
     <a href="players.html">Player Leaderboard</a>
     <a href="replacethis">Roulette</a>
-    <a class="submit-button" href="https://docs.google.com/forms/d/e/1FAIpQLSfFiD-3s3sAuJYwpMrpUzwUWWCeSWDOiEV7rXDKXtw0awHPHg/viewform?usp=header"
-       target="_blank" rel="noopener noreferrer">Submit Record</a>
+    <a class="submit-button"
+       href="https://docs.google.com/forms/d/e/1FAIpQLSfFiD-3s3sAuJYwpMrpUzwUWWCeSWDOiEV7rXDKXtw0awHPHg/viewform?usp=header"
+       target="_blank"
+       rel="noopener noreferrer">Submit Record</a>
   </nav>
 </header>
 
 <main>
   <div class="page-layout">
+
     <aside class="level-list">
       <h2>Demon List</h2>
-      <input id="search" type="search"
-        placeholder="Search levels or IDs..." aria-label="Search levels">
+
+      <input
+        id="search"
+        type="search"
+        placeholder="Search levels or IDs..."
+        aria-label="Search levels">
+
       <div id="level-buttons"></div>
     </aside>
 
@@ -396,34 +418,43 @@ footer {
       <h2 id="level-name">Loading...</h2>
 
       <div class="details">
-        <strong>CREATORS</strong><span id="creator">Community</span>
-        <strong>VERIFIER</strong><span id="verifier">TBD</span>
-        <strong>PUBLISHER</strong><span>MCL</span>
+        <strong>CREATORS</strong>
+        <span id="creator">Community</span>
+
+        <strong>VERIFIER</strong>
+        <span id="verifier">TBD</span>
+
+        <strong>PUBLISHER</strong>
+        <span>MCL</span>
       </div>
 
-<div class="game-preview" style="padding: 0; display: block; min-height: 0;">
-  <a href="https://youtu.be/witXzJUbKtk?si=fWedMXFiHboFacqr"
-     target="_blank"
-     rel="noopener noreferrer"
-     style="display: block; position: relative;">
-    <img
-      src="https://static.wikia.nocookie.net/geometry-dash-fan/images/2/25/Alpha_Pack_-_ReTraY.png/revision/latest?cb=20250302041257"
-      alt="ReTraY gameplay video thumbnail"
-      style="display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover;">
-    <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #f5223d; color: white; padding: 12px 20px; border-radius: 12px; font-size: 28px;">▶</span>
-  </a>
-  <div class="preview-note" style="padding: 10px;">ReTraY gameplay • Tap to watch</div>
-</div>
+      <!-- ReTraY gameplay plays inside the website -->
+      <div class="game-preview">
+        <iframe
+          src="https://youtu.be/witXzJUbKtk?si=fWedMXFiHboFacqr"
+          title="ReTraY 100%"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+
+        <div class="preview-note">
+          ReTraY gameplay • Play here!
+        </div>
+      </div>
 
       <div class="stats">
         <div class="stat">
           <span class="stat-label">Points when completed</span>
-          <span class="stat-value" id="points">500</span>
+          <span class="stat-value" id="points">50</span>
         </div>
+
         <div class="stat">
           <span class="stat-label">Level ID</span>
           <span class="stat-value" id="level-id">—</span>
         </div>
+
         <div class="stat">
           <span class="stat-label">Password</span>
           <span class="stat-value" id="password">Unknown</span>
@@ -431,6 +462,7 @@ footer {
       </div>
 
       <h2 class="records-title">Records</h2>
+
       <div class="records-box" id="records">
         Approved player completions will be listed here.
       </div>
@@ -438,7 +470,10 @@ footer {
 
     <aside class="right-sidebar">
       <section class="side-section">
-        <div class="made-by">Website layout made for The Mouse Click List.</div>
+        <div class="made-by">
+          Website layout made for The Mouse Click List.
+        </div>
+
         <h2>List Editors</h2>
         <div class="editor">👑 MCL Owner</div>
         <div class="editor">♟ List Helper</div>
@@ -457,10 +492,15 @@ footer {
 
       <section class="side-section">
         <h2>About MCL</h2>
-        <p>The Mouse Click List is a fan-made Geometry Dash ranking project.</p>
-        <p>Level points are set individually by the MCL list owner.</p>
+        <p>
+          The Mouse Click List is a fan-made Geometry Dash ranking project.
+        </p>
+        <p>
+          Level points are set individually by the MCL list owner.
+        </p>
       </section>
     </aside>
+
   </div>
 </main>
 
@@ -510,8 +550,10 @@ function renderButtons(query = "") {
 
   matches.forEach(({ demon, index }) => {
     const button = document.createElement("button");
+
     button.className = "level-button" +
       (index === selectedLevel ? " selected" : "");
+
     button.type = "button";
 
     const rank = document.createElement("span");
@@ -522,6 +564,7 @@ function renderButtons(query = "") {
     name.textContent = demon.name;
 
     button.append(rank, name);
+
     button.addEventListener("click", () => {
       selectedLevel = index;
       renderButtons(document.getElementById("search").value);
@@ -532,29 +575,28 @@ function renderButtons(query = "") {
   });
 }
 
-
 function renderDetails() {
   if (demons.length === 0) {
     document.getElementById("level-name").textContent = "No levels yet";
-    document.getElementById("preview-title").textContent = "MCL Demon List";
     document.getElementById("creator").textContent = "—";
     document.getElementById("verifier").textContent = "—";
     document.getElementById("points").textContent = "—";
     document.getElementById("level-id").textContent = "—";
     document.getElementById("password").textContent = "—";
-    document.getElementById("records").textContent = "No levels have been added yet.";
+    document.getElementById("records").textContent =
+      "No levels have been added yet.";
     return;
   }
 
   const demon = demons[selectedLevel];
 
   document.getElementById("level-name").textContent = demon.name;
-  document.getElementById("preview-title").textContent = demon.name;
   document.getElementById("creator").textContent = demon.creator;
   document.getElementById("verifier").textContent = demon.verifier;
   document.getElementById("points").textContent = demon.points;
   document.getElementById("level-id").textContent = demon.id;
   document.getElementById("password").textContent = demon.password;
+
   document.getElementById("records").textContent =
     "No approved player records yet.";
 }
@@ -566,6 +608,6 @@ document.getElementById("search").addEventListener("input", event => {
 renderButtons();
 renderDetails();
 </script>
+
 </body>
 </html>
-
