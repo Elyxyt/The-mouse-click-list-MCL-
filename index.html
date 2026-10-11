@@ -531,87 +531,7 @@ const demons = [
     verifier: "Elyxyr",
     password: "532211"
   }
-
-
-const completionRecords = [
-  {
-    player: "Elyxyt",
-    level: "retray",
-    video: "https://youtu.be/witXzJUbKtk"
-  }
 ];
-
-function getYouTubeVideoId(url) {
-  try {
-    const parsed = new URL(url);
-    let id = "";
-
-    if (parsed.hostname === "youtu.be") {
-      id = parsed.pathname.split("/").filter(Boolean)[0] || "";
-    } else if (
-      ["youtube.com", "www.youtube.com", "m.youtube.com",
-       "youtube-nocookie.com", "www.youtube-nocookie.com"].includes(parsed.hostname)
-    ) {
-      if (parsed.pathname === "/watch") {
-        id = parsed.searchParams.get("v") || "";
-      } else {
-        const parts = parsed.pathname.split("/").filter(Boolean);
-        if (["embed", "shorts", "live"].includes(parts[0])) {
-          id = parts[1] || "";
-        }
-      }
-    }
-
-    return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : "";
-  } catch {
-    return "";
-  }
-}
-
-function renderCompletionVideos() {
-  const container = document.getElementById("records");
-  container.replaceChildren();
-
-  if (completionRecords.length === 0) {
-    container.textContent = "No approved player records yet.";
-    return;
-  }
-
-  completionRecords.forEach(record => {
-    const card = document.createElement("div");
-    card.style.marginTop = "12px";
-
-    const heading = document.createElement("h3");
-    heading.textContent = record.player;
-
-    const level = document.createElement("p");
-    level.textContent = "Completed: " + record.level;
-
-    card.append(heading, level);
-
-    const videoId = getYouTubeVideoId(record.video);
-
-    if (videoId) {
-      const iframe = document.createElement("iframe");
-      iframe.src = "https://www.youtube-nocookie.com/embed/" + videoId;
-      iframe.title = record.player + " completion proof";
-      iframe.style.width = "100%";
-      iframe.style.aspectRatio = "16 / 9";
-      iframe.style.border = "0";
-      iframe.style.borderRadius = "8px";
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      iframe.allowFullscreen = true;
-      iframe.loading = "lazy";
-      card.appendChild(iframe);
-    } else {
-      const message = document.createElement("p");
-      message.textContent = "Please add a valid YouTube link.";
-      card.appendChild(message);
-    }
-
-    container.appendChild(card);
-  });
-}
   
   {
     name: "The Nightmare",
@@ -623,7 +543,6 @@ function renderCompletionVideos() {
   }
 ];
 
-
 const completionRecords = [
   {
     player: "RobiRobiLegit",
@@ -632,6 +551,13 @@ const completionRecords = [
   }
 ];
 
+  {
+    player: "Elyxyt",
+    level: "retray",
+    video: "https://youtu.be/witXzJUbKtk"
+  }
+];
+  
 function getYouTubeVideoId(url) {
   try {
     const parsed = new URL(url);
